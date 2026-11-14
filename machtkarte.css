@@ -1,7 +1,7 @@
 /* Struktur der Machtkarte. Enthält KEINE Farben/Schriften – alles kommt aus themes.css. */
 .mk {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 22rem;
+  grid-template-columns: minmax(0, 1fr) clamp(16rem, 28vw, 22rem);
   gap: 1.5rem;
   padding: 1.5rem;
   background: var(--bg);
@@ -9,15 +9,15 @@
   font-family: var(--font);
   min-height: 100%;
 }
-/* Zweispaltig nur, solange die Bühne mindestens ihre Mindestbreite (36rem, s. u.) behält */
-@media (max-width: 67rem) { .mk { grid-template-columns: minmax(0, 1fr); } }
+/* Zweispaltig nur, solange die Bühne mindestens ihre Mindestbreite (34rem, s. u.) behält */
+@media (max-width: 62rem) { .mk { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 52rem) { .mk { padding: .75rem; } }
 /* Rahmen: neutraler Träger um Scroller (Bühne), Hinweis + Bildunterschrift; Stile dürfen ihn gestalten */
 .mk-rahmen { box-sizing: border-box; width: 100%; max-width: 62rem; margin-inline: auto; align-self: start; }
 /* Bühne: feste Proportion (setzt geruest() in ansicht.js), alles darin skaliert mit (Positionen in %, Schrift in cqw).
    Sie behält eine Mindestbreite, damit Knotentexte passen, und lässt sich darüber hinaus seitlich wischen;
    Hinweis und Bildunterschrift liegen außerhalb des Scrollbereichs. */
-.mk-buehne { position: relative; container-type: inline-size; width: 100%; min-width: 36rem; }
+.mk-buehne { position: relative; container-type: inline-size; width: 100%; min-width: 34rem; }
 .mk-scroller { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .mk-wischhinweis { display: none; }
 @media (max-width: 44rem) {
@@ -77,7 +77,7 @@
   padding: 1.2rem; background: var(--panel-bg); border: var(--panel-rand);
   border-radius: var(--knoten-radius);
 }
-@media (max-width: 67rem) { .mk-detail { position: static; max-height: none; } }
+@media (max-width: 62rem) { .mk-detail { position: static; max-height: none; } }
 .mk-detail-titel { margin: 0 0 .6rem; font-size: 1.3rem; line-height: 1.2; }
 .mk-detail-meta { margin: 0 0 .3rem; font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; color: var(--gedaempft); }
 .mk-hinweis { color: var(--gedaempft); font-style: italic; margin: 0 0 .8rem; }
