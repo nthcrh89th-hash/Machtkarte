@@ -1,0 +1,39 @@
+/* Struktur der Zeitleiste. Farben/Schriften kommen aus themes.css; Rahmen, Detailfeld, Bänder aus machtkarte.css. */
+.zl-buehne { aspect-ratio: 1000 / 560; }
+
+.zl-achse { fill: var(--gedaempft); font-size: 13px; letter-spacing: .12em; text-transform: uppercase; }
+.zl-linie { fill: none; stroke: var(--akzent); stroke-width: 3; stroke-linejoin: round; }
+.zl-flaeche { fill: var(--akzent); opacity: .12; }
+
+/* Station: Punkt mit Nummer genau auf der Kurve, Titel darüber oder darunter */
+.zl-station {
+  position: absolute; z-index: 1; translate: -50% -50%;
+  display: grid; justify-items: center; padding: 0; border: 0; background: none; cursor: pointer;
+  font: inherit; color: var(--text);
+}
+.zl-nummer {
+  display: grid; place-items: center; width: 2.2em; height: 2.2em; border-radius: 50%;
+  font-size: clamp(.6rem, 1.4cqw, .9rem); font-weight: 700;
+  background: var(--knoten-bg); color: var(--knoten-text); border: 2px solid var(--akzent);
+  box-shadow: var(--knoten-schatten); transition: transform .2s;
+}
+.zl-titel {
+  position: absolute; white-space: nowrap; padding: .2em .5em;
+  font-size: clamp(.55rem, 1.3cqw, .85rem); letter-spacing: .04em;
+  background: var(--knoten-bg); color: var(--knoten-text); border: var(--knoten-rand); border-radius: var(--knoten-radius);
+}
+.zl-station[data-lage="oben"] .zl-titel { bottom: calc(100% + .4em); }
+.zl-station[data-lage="unten"] .zl-titel { top: calc(100% + .4em); }
+.zl-station:hover .zl-nummer, .zl-station.ist-aktiv .zl-nummer { transform: scale(1.2); background: var(--akzent); color: #111; }
+.zl-station:focus-visible { outline: 3px solid var(--akzent); outline-offset: 4px; border-radius: 50%; }
+.hat-auswahl .zl-station:not(.ist-aktiv) { opacity: .45; }
+
+/* Figuren-Knöpfe und Blättern im Detailfeld */
+.zl-figuren, .zl-blaettern { display: flex; flex-wrap: wrap; gap: .4rem; }
+.zl-blaettern { justify-content: space-between; margin-top: 1.2rem; }
+.zl-figur {
+  font: inherit; font-size: .8rem; padding: .3rem .7rem; cursor: pointer;
+  background: transparent; color: inherit; border: 1px solid var(--gedaempft); border-radius: var(--knoten-radius);
+}
+.zl-figur:hover:not(:disabled) { border-color: var(--akzent); color: var(--akzent); }
+.zl-figur:disabled { opacity: .35; cursor: default; }

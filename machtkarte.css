@@ -1,0 +1,103 @@
+/* Struktur der Machtkarte. Enthält KEINE Farben/Schriften – alles kommt aus themes.css. */
+.mk {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22rem;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  min-height: 100%;
+}
+@media (max-width: 52rem) { .mk { grid-template-columns: 1fr; padding: .75rem; } }
+/* Schmale Bildschirme: Karte behält Mindestbreite und lässt sich seitlich wischen */
+@media (max-width: 44rem) {
+  .mk-rahmen { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .mk-buehne { min-width: 40rem; }
+  .mk-bildunterschrift { min-width: 40rem; }
+}
+
+/* Bühne: feste Proportion, alles darin skaliert mit (Positionen in %, Schrift in cqw) */
+.mk-buehne {
+  position: relative; container-type: inline-size;
+  aspect-ratio: 1000 / 720; width: 100%;
+}
+/* Rahmen: neutraler Träger um Bühne + Bildunterschrift; Stile dürfen ihn gestalten */
+.mk-rahmen { box-sizing: border-box; width: 100%; max-width: 62rem; margin-inline: auto; align-self: start; }
+.mk-bildunterschrift { display: none; margin: 0; text-align: center; text-transform: uppercase; }
+.mk-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+
+/* Kulisse (vom Layout gezeichnet) */
+.mk-k-flaeche { fill: var(--kulisse-fuellung); stroke: var(--kulisse-kontur); stroke-width: 2; }
+.mk-k-ebene { fill: var(--kulisse-a); stroke: none; }
+.mk-k-ebene[data-alt="1"] { fill: var(--kulisse-b); }
+.mk-k-dach { fill: var(--kulisse-dach); stroke: var(--kulisse-kontur); stroke-width: 2; }
+.mk-k-linie { fill: none; stroke: var(--kulisse-linie); stroke-width: 1.2; stroke-dasharray: 6 5; }
+.mk-ebene-titel {
+  fill: var(--gedaempft); font-size: 15px; letter-spacing: .12em; text-transform: uppercase;
+}
+.mk-ebene-untertitel { fill: var(--gedaempft); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+
+/* Knoten: Mittelpunkt liegt auf der vom Layout berechneten Position */
+.mk-knoten {
+  position: absolute; z-index: 1; translate: -50% -50%;
+  --schrift: clamp(.62rem, 1.55cqw, 1rem);
+  font: inherit; font-size: var(--schrift); color: var(--knoten-text); cursor: pointer;
+  padding: .55em 1em; max-width: 20cqw; text-align: center; hyphens: manual;
+  background: var(--knoten-bg);
+  border: var(--knoten-rand);
+  border-radius: var(--knoten-radius);
+  box-shadow: var(--knoten-schatten);
+  transition: opacity .2s, box-shadow .2s;
+}
+.mk-knoten:nth-child(odd)  { rotate: var(--neigung); }
+.mk-knoten:nth-child(even) { rotate: calc(var(--neigung) * -1); }
+.mk-knoten[data-typ="figur"]   { background: var(--typ-figur, var(--knoten-bg)); }
+.mk-knoten[data-typ="instanz"] { background: var(--typ-instanz, var(--knoten-bg)); }
+.mk-knoten:focus-visible, .mk-knoten.ist-aktiv { outline: 3px solid var(--akzent); outline-offset: 3px; }
+.mk-knoten.ist-nah { box-shadow: 0 0 0 2px var(--akzent); }
+/* Im Netz-Layout wachsen Knoten mit ihrer „Macht“ (Anteil ausgehender Beziehungen) */
+.mk[data-layout="netz"] .mk-knoten { font-size: calc(var(--schrift) * (.82 + var(--macht) * .5)); }
+
+.mk-kante {
+  fill: none; stroke: var(--kante); stroke-width: var(--kante-breite);
+  opacity: .85; transition: opacity .2s, stroke .2s;
+}
+/* Informelle Beziehungen gestrichelt, formale durchgezogen */
+.mk-kante[data-art="informell"] { stroke-dasharray: var(--kante-dash); }
+.mk-pfeilspitze { fill: var(--kante); }
+.mk-kante.ist-aktiv { stroke: var(--akzent); opacity: 1; stroke-width: calc(var(--kante-breite) * 1.6); }
+
+/* Bei Auswahl alles Unbeteiligte zurücknehmen */
+.hat-auswahl .mk-knoten:not(.ist-aktiv):not(.ist-nah) { opacity: .35; }
+.hat-auswahl .mk-kante:not(.ist-aktiv) { opacity: .12; }
+
+.mk-detail {
+  align-self: start; position: sticky; top: 1rem;
+  max-height: calc(100vh - 2rem); overflow-y: auto; box-sizing: border-box;
+  padding: 1.2rem; background: var(--panel-bg); border: var(--panel-rand);
+  border-radius: var(--knoten-radius);
+}
+@media (max-width: 52rem) { .mk-detail { position: static; max-height: none; } }
+.mk-detail-titel { margin: 0 0 .6rem; font-size: 1.3rem; line-height: 1.2; }
+.mk-detail-meta { margin: 0 0 .3rem; font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; color: var(--gedaempft); }
+.mk-hinweis { color: var(--gedaempft); font-style: italic; margin: 0 0 .8rem; }
+.mk-text { font-size: .9rem; line-height: 1.5; margin: 0 0 .7rem; }
+.mk-beziehungen { margin: .3rem 0 0; padding-left: 1.1rem; font-size: .85rem; line-height: 1.45; }
+.mk-beziehungen li { margin-bottom: .35rem; }
+.mk-beziehungen .mk-text { font-size: inherit; }
+
+/* Abschnitte im Detailfeld; „Deutung“ ist sichtbar als Interpretation abgesetzt */
+.mk-abschnitt { margin: 0 0 .4rem; }
+.mk-abschnitt-titel { margin: .9rem 0 .3rem; font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--gedaempft); }
+.mk-abschnitt[data-marke="deutung"] { padding-left: .7rem; border-left: 3px solid var(--akzent); }
+.mk-abschnitt[data-marke="deutung"] .mk-text { font-style: italic; }
+
+/* Machtgrad als Punktreihe */
+.mk-machtgrad { display: flex; align-items: center; gap: .6rem; margin: 0 0 .4rem; font-size: .8rem; }
+.mk-machtgrad-label { letter-spacing: .1em; text-transform: uppercase; color: var(--gedaempft); font-size: .72rem; }
+.mk-punkte { display: inline-flex; gap: .25rem; }
+.mk-punkt { width: .7rem; height: .7rem; border-radius: 50%; border: 1.5px solid currentColor; opacity: .5; }
+.mk-punkt.ist-voll { background: var(--akzent); border-color: var(--akzent); opacity: 1; }
+
+.mk-legende { margin: .8rem 0 0; padding-left: 1.1rem; font-size: .8rem; line-height: 1.45; color: var(--gedaempft); }
