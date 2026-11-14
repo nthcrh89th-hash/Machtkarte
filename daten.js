@@ -124,7 +124,7 @@ export default {
     {
       id: 'buerstner', ebene: 'umfeld', typ: 'figur', label: 'Fräulein Bürstner', machtgrad: 1,
       quellen: 'Informell: Nähe, Anziehung; ihre einzige Macht ist, sich K. zu entziehen.',
-      handeln: 'Schreibmaschinistin, Nachbarin in der Pension. K. erzählt ihr nachts von der Verhaftung und küsst sie gegen ihren Willen. Danach meidet sie ihn und zieht zu Fräulein Montag.',
+      handeln: 'Schreibmaschinistin, Nachbarin in der Pension. K. erzählt ihr nachts von der Verhaftung und küsst sie gegen ihren Willen. Danach meidet sie ihn; ihre Freundin Fräulein Montag zieht zu ihr ins Zimmer.',
       deutung: 'Sie steht für die bürgerliche Ordnung, aus der K. herausfällt. Hier ist K. selbst derjenige, der Macht ausübt.',
     },
 

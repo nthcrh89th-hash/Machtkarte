@@ -1,9 +1,8 @@
-// Einstiegspunkt: mountMachtkarte(container, daten, { layout }) baut die Karte auf.
-// Zuständig für DOM, Auswahl und Detailfeld. Anordnung: layouts/. Aussehen: CSS.
+// Einstiegspunkt: mountMachtkarte(container, daten) baut die Karte auf.
+// Zuständig für Knoten, Auswahl und Detailfeld. Anordnung: pyramide.js. Aussehen: CSS.
 import { zeichneKanten } from './kanten.js';
-import layouts from './layouts/index.js';
-import { B, H } from './layouts/gemeinsam.js';
-import { el, svgEl, abschnitt, punktwert, uebersicht, escSetztZurueck } from './ansicht.js';
+import { berechnePyramide, B, H } from './pyramide.js';
+import { el, svgEl, geruest, zeigeImBild, abschnitt, punktwert, uebersicht, escSetztZurueck } from './ansicht.js';
 
 /** Wirft einen Fehler mit allen Unstimmigkeiten in den Daten (auch in den Tests genutzt). */
 export function pruefe(d) {
@@ -22,67 +21,42 @@ export function pruefe(d) {
   if (fehler.length) throw new Error('Machtkarte-Daten fehlerhaft:\n' + fehler.join('\n'));
 }
 
-export function mountMachtkarte(container, daten, { layout = 'pyramide' } = {}) {
+export function mountMachtkarte(container, daten) {
   pruefe(daten);
   const knotenVon = new Map(daten.knoten.map((k) => [k.id, k]));
   const ebeneIndex = new Map(daten.ebenen.map((e, i) => [e.id, i]));
 
   // --- Aufbau ---
-  container.classList.add('mk');
-  container.replaceChildren();
-  const rahmen = el('div', 'mk-rahmen');
-  const buehne = el('div', 'mk-buehne');
-  const svg = svgEl('svg', { class: 'mk-svg', viewBox: `0 0 ${B} ${H}`, 'aria-hidden': 'true' });
-  const gKulisse = svgEl('g'), gKanten = svgEl('g');
-  svg.append(gKulisse, gKanten);
-  buehne.append(svg);
-
-  // „Macht“ eines Knotens = Anteil seiner ausgehenden Beziehungen (0–1); Layouts/CSS dürfen es nutzen.
-  const aus = new Map();
-  daten.beziehungen.forEach((b) => aus.set(b.von, (aus.get(b.von) || 0) + 1));
-  const maxAus = Math.max(1, ...aus.values());
+  const { svg, buehne, scroller, detail } = geruest(container, { titel: daten.titel, breite: B, hoehe: H });
+  const { pos, kulisse, titel } = berechnePyramide(daten);
+  // Reihenfolge im SVG: Kulisse, Linien, Ebenentitel (Titel liegen über den Linien)
+  const gKulisse = svgEl('g'), gKanten = svgEl('g'), gTitel = svgEl('g');
+  gKulisse.append(...kulisse);
+  gTitel.append(...titel);
+  svg.append(gKulisse, gKanten, gTitel);
 
   const knotenEls = new Map();
   daten.knoten.forEach((k) => {
     const b = el('button', 'mk-knoten', k.label);
     b.type = 'button';
     b.dataset.typ = k.typ;
-    b.style.setProperty('--macht', (aus.get(k.id) || 0) / maxAus);
+    b.style.left = `${(pos[k.id].x / B) * 100}%`;
+    b.style.top = `${(pos[k.id].y / H) * 100}%`;
+    b.style.maxWidth = `${(pos[k.id].breite / B) * 100}cqw`; // enge Pyramidenstufen begrenzen die Knotenbreite
     b.addEventListener('click', () => waehle(state.auswahl === k.id ? null : k.id));
     knotenEls.set(k.id, b);
     buehne.append(b);
   });
 
-  const detail = el('aside', 'mk-detail');
-  detail.setAttribute('aria-live', 'polite');
-  rahmen.append(buehne, el('p', 'mk-bildunterschrift', daten.titel));
-  container.append(rahmen, detail);
-
   // --- Zustand ---
-  const state = { auswahl: null, layout: null, pos: {}, kanten: [] };
+  const state = { auswahl: null, kanten: [], gezeigt: false };
 
   function zeichneLinien() {
     if (!buehne.offsetWidth) return; // ausgeblendet: ResizeObserver zeichnet beim Einblenden
     const f = B / buehne.offsetWidth; // Pixel → Zeichenmaß
     const groesse = new Map([...knotenEls].map(([id, e]) => [id, [e.offsetWidth * f, e.offsetHeight * f]]));
-    state.kanten = zeichneKanten(gKanten, state.pos, groesse, daten.beziehungen);
+    state.kanten = zeichneKanten(gKanten, pos, groesse, daten.beziehungen);
     aktualisiere();
-  }
-
-  function setzeLayout(name) {
-    if (!layouts[name]) throw new Error(`Unbekanntes Layout "${name}"`);
-    state.layout = name;
-    container.dataset.layout = name;
-    const { pos, kulisse } = layouts[name].berechne(daten);
-    state.pos = pos;
-    gKulisse.replaceChildren(...kulisse.map((f) => svgEl(f.tag, f.attrs, f.text)));
-    knotenEls.forEach((e, id) => {
-      e.style.left = `${(pos[id].x / B) * 100}%`;
-      e.style.top = `${(pos[id].y / H) * 100}%`;
-      // Optional: Layout begrenzt die Knotenbreite (in Zeichenmaß), z. B. in engen Pyramidenstufen.
-      e.style.maxWidth = pos[id].breite ? `min(20cqw, ${(pos[id].breite / B) * 100}cqw)` : '';
-    });
-    zeichneLinien();
   }
 
   function verbunden(id) {
@@ -140,26 +114,30 @@ export function mountMachtkarte(container, daten, { layout = 'pyramide' } = {}) 
   function waehle(id) {
     state.auswahl = id;
     aktualisiere();
+    if (id) zeigeImBild(scroller, knotenEls.get(id));
   }
 
   // Esc hebt die Auswahl auf; Größenänderung zeichnet nur die Linien neu.
   const escAbmelden = escSetztZurueck(() => waehle(null));
-  const beobachter = new ResizeObserver(() => { if (state.layout) zeichneLinien(); });
+  const beobachter = new ResizeObserver(() => {
+    zeichneLinien();
+    // Beim ersten Einblenden auf schmalen Bildschirmen mittig starten (außer eine Figur wurde schon gewählt).
+    if (!state.gezeigt && buehne.offsetWidth) {
+      state.gezeigt = true;
+      if (!state.auswahl) scroller.scrollLeft = (scroller.scrollWidth - scroller.clientWidth) / 2;
+    }
+  });
   beobachter.observe(buehne);
-  setzeLayout(layout);
-  // Auf schmalen Bildschirmen ist die Karte seitlich wischbar: mittig starten.
-  rahmen.scrollLeft = (rahmen.scrollWidth - rahmen.clientWidth) / 2;
+  aktualisiere();
 
   return {
     waehle,
-    setzeLayout,
     /** Räumt Listener und DOM auf (z. B. beim Seitenwechsel). */
     entfernen() {
       escAbmelden();
       beobachter.disconnect();
       container.replaceChildren();
       container.classList.remove('mk', 'hat-auswahl');
-      delete container.dataset.layout;
     },
   };
 }

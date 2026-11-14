@@ -13,7 +13,7 @@
   --kante: #8a949e; --kante-breite: 2px; --kante-dash: 2 6;
   --panel-bg: #0e1116; --panel-rand: 1px solid rgba(255, 255, 255, .6);
   --kulisse-fuellung: transparent; --kulisse-kontur: #ffffff; --kulisse-a: #1b2027; --kulisse-b: #2a313a;
-  --kulisse-dach: #1b2027; --kulisse-linie: rgba(255, 255, 255, .35);
+  --kulisse-linie: rgba(255, 255, 255, .35);
   --stufe-oben: #0a0c0f; --stufe-mitte: #8c98a3; --stufe-unten: #cfd6cd;
 }
 /* Dunkler, an den Schultern abgeschrägter Rahmen mit Bildunterschrift */
@@ -26,16 +26,22 @@
 .mk[data-theme="hierarchie"] .mk-bildunterschrift {
   display: block; margin-top: 1.1rem; color: #fff; font-size: 1.5rem; font-weight: 300; letter-spacing: .28em;
 }
+.mk[data-theme="hierarchie"] .mk-wischhinweis { color: #a9b3bc; }
+/* Handy: Bildunterschrift kleiner, darf umbrechen */
+@media (max-width: 44rem) { .mk[data-theme="hierarchie"] .mk-bildunterschrift { font-size: .95rem; letter-spacing: .16em; } }
 /* Stufenfarben: dreistufiger Verlauf nach --s (0 = oben, 1 = unten), Linien weiß */
-.mk[data-theme="hierarchie"] .mk-k-ebene {
-  fill: color-mix(in srgb,
+.mk[data-theme="hierarchie"] :is(.mk-k-ebene, .mk-ebene-titel, .mk-ebene-untertitel) {
+  --stufenfarbe: color-mix(in srgb,
     color-mix(in srgb, var(--stufe-oben), var(--stufe-mitte) clamp(0%, calc(var(--s) * 200%), 100%)),
     var(--stufe-unten) clamp(0%, calc((var(--s) - .5) * 200%), 100%));
-  stroke: #fff; stroke-width: 3;
 }
-/* Schrift auf den Stufen: hell auf dunklen, dunkel auf hellen Stufen */
+.mk[data-theme="hierarchie"] .mk-k-ebene { fill: var(--stufenfarbe); stroke: #fff; stroke-width: 3; }
+/* Schrift auf den Stufen: hell auf dunklen, dunkel auf hellen Stufen; Kontur in Stufenfarbe hält Linien fern */
 .mk[data-theme="hierarchie"] .mk-ebene-titel,
-.mk[data-theme="hierarchie"] .mk-ebene-untertitel { fill: hsl(0 0% clamp(6%, calc((0.5 - var(--s)) * 1000%), 100%)); }
+.mk[data-theme="hierarchie"] .mk-ebene-untertitel {
+  fill: hsl(0 0% clamp(6%, calc((0.5 - var(--s)) * 1000%), 100%));
+  stroke: var(--stufenfarbe); stroke-width: 5px; stroke-linejoin: round; paint-order: stroke;
+}
 .mk[data-theme="hierarchie"] .mk-ebene-titel { font-size: 21px; font-weight: 600; letter-spacing: .08em; }
 .mk[data-theme="hierarchie"] .mk-ebene-untertitel { font-size: 12px; letter-spacing: .06em; }
 .mk[data-theme="hierarchie"] .mk-knoten { text-transform: uppercase; letter-spacing: .04em; padding-inline: .6em; font-size: calc(var(--schrift) * .8); }

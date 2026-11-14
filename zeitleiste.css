@@ -1,6 +1,4 @@
 /* Struktur der Zeitleiste. Farben/Schriften kommen aus themes.css; Rahmen, Detailfeld, Bänder aus machtkarte.css. */
-.zl-buehne { aspect-ratio: 1000 / 560; }
-
 .zl-achse { fill: var(--gedaempft); font-size: 13px; letter-spacing: .12em; text-transform: uppercase; }
 .zl-linie { fill: none; stroke: var(--akzent); stroke-width: 3; stroke-linejoin: round; }
 .zl-flaeche { fill: var(--akzent); opacity: .12; }

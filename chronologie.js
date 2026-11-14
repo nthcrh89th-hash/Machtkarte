@@ -34,7 +34,7 @@ export default {
     {
       id: 'verhaftung', titel: 'Verhaftung', kapitel: 'Verhaftung', spielraum: 3,
       figuren: ['gericht', 'grubach', 'buerstner'],
-      versuch: 'K. hält alles für einen Scherz, sucht seine Legitimationspapiere und will den Staatsanwalt Hasterer, einen Bekannten, anrufen.',
+      versuch: 'Der Aufseher verhört ihn im Zimmer von Fräulein Bürstner, in der Pension von Frau Grubach. K. hält alles für einen Scherz, sucht seine Legitimationspapiere und will den Staatsanwalt Hasterer, einen Bekannten, anrufen.',
       scheitern: 'Die Wächter wischen die Papiere beiseite: „Was kümmern uns denn die?“ Er ist verhaftet, darf aber weiter in die Bank gehen.',
       deutung: 'Die Ordnung, auf die K. vertraut (Ausweis, Beziehungen, Rechtsstaat), gilt plötzlich nicht mehr. Das Gericht dringt in sein Schlafzimmer ein – in den privatesten Raum.',
     },
@@ -90,7 +90,7 @@ export default {
     {
       id: 'ende', titel: 'Ende', kapitel: 'Ende', spielraum: 0,
       figuren: ['gericht', 'buerstner', 'k'],
-      versuch: 'Am Vorabend seines 31. Geburtstags holen ihn zwei Herren ab. K. leistet kaum Widerstand.',
+      versuch: 'Am Vorabend seines 31. Geburtstags holen ihn zwei Herren ab. Unterwegs taucht eine Frau auf, die Fräulein Bürstner sein könnte; danach gibt K. jeden Widerstand auf.',
       scheitern: 'In einem Steinbruch wird er erstochen. Seine letzten Worte: „Wie ein Hund!“',
       deutung: 'Endgültige Machtlosigkeit. K. stirbt, ohne Richter und Anklage je gesehen zu haben.',
     },

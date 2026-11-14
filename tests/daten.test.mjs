@@ -6,7 +6,7 @@ import daten from '../daten.js';
 import chronologie from '../chronologie.js';
 import { pruefe } from '../machtkarte.js';
 import { pruefeChronologie } from '../zeitleiste.js';
-import layouts from '../layouts/index.js';
+import { berechnePyramide } from '../pyramide.js';
 
 test('Machtkarte-Daten sind stimmig', () => assert.doesNotThrow(() => pruefe(daten)));
 
@@ -23,9 +23,9 @@ test('Jede Station trennt Romanhandlung und Deutung', () => {
   });
 });
 
-test('Jedes Layout liefert eine Position für jeden Knoten', () => {
-  Object.entries(layouts).forEach(([name, l]) => {
-    const { pos } = l.berechne(daten);
-    daten.knoten.forEach((k) => assert.ok(Number.isFinite(pos[k.id]?.x) && Number.isFinite(pos[k.id]?.y), `${name}: ${k.id}`));
-  });
+test('Die Pyramide liefert eine Position für jeden Knoten', () => {
+  // berechnePyramide baut SVG-Elemente; ohne Browser prüfen wir nur die Positionen
+  globalThis.document = { createElementNS: () => ({ setAttribute() {}, append() {}, textContent: '' }) };
+  const { pos } = berechnePyramide(daten);
+  daten.knoten.forEach((k) => assert.ok(Number.isFinite(pos[k.id]?.x) && Number.isFinite(pos[k.id]?.y), k.id));
 });

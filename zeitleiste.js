@@ -1,8 +1,8 @@
 // Zeitleiste: mountZeitleiste(container, chronologie, daten, { beiFigur }) baut die Chronologie auf.
 // Inhalte: chronologie.js (Stationen), daten.js (Figuren). Aussehen: zeitleiste.css + themes.css.
-import { el, svgEl, abschnitt, punktwert, uebersicht, escSetztZurueck } from './ansicht.js';
+import { el, svgEl, geruest, zeigeImBild, stufe, abschnitt, punktwert, uebersicht, escSetztZurueck } from './ansicht.js';
 
-const B = 1000, H = 560;               // Zeichenmaß der Bühne
+const B = 1000, H = 600;               // Zeichenmaß der Bühne
 const LINKS = 120, RECHTS = 920, OBEN = 40, UNTEN = 520;
 const STUFEN = 5;                      // Spielraum 0–5 → 5 Bänder, passend zu den Ebenen der Machtkarte
 
@@ -27,8 +27,8 @@ export function pruefeChronologie(c, daten) {
 function kulisse(stationen) {
   const n = stationen.length, teile = [];
   for (let i = 0; i < STUFEN; i++) {
-    // Band i von oben; --s wie bei den Pyramidenstufen (0 = oben, 1 = unten)
-    teile.push(svgEl('rect', { class: 'mk-k-ebene', 'data-alt': i % 2, style: `--s:${i / (STUFEN - 1)}`,
+    // Band i von oben; --s wie bei den Pyramidenstufen
+    teile.push(svgEl('rect', { class: 'mk-k-ebene', 'data-alt': i % 2, style: stufe(i, STUFEN),
       x: LINKS - 70, y: OBEN + (i * (UNTEN - OBEN)) / STUFEN, width: RECHTS - LINKS + 140, height: (UNTEN - OBEN) / STUFEN }));
   }
   teile.push(svgEl('text', { class: 'zl-achse', x: LINKS - 60, y: OBEN - 12 }, 'Spielraum groß'));
@@ -44,13 +44,9 @@ export function mountZeitleiste(container, chronologie, daten, { beiFigur } = {}
   const figurVon = new Map(daten.knoten.map((k) => [k.id, k]));
   const n = chronologie.stationen.length;
 
-  container.classList.add('mk', 'zl');
-  container.replaceChildren();
-  const rahmen = el('div', 'mk-rahmen');
-  const buehne = el('div', 'mk-buehne zl-buehne');
-  const svg = svgEl('svg', { class: 'mk-svg', viewBox: `0 0 ${B} ${H}`, 'aria-hidden': 'true' });
+  container.classList.add('zl');
+  const { svg, buehne, scroller, detail } = geruest(container, { titel: chronologie.titel, breite: B, hoehe: H });
   svg.append(...kulisse(chronologie.stationen));
-  buehne.append(svg);
 
   const knoepfe = chronologie.stationen.map((s, i) => {
     const b = el('button', 'zl-station');
@@ -63,11 +59,6 @@ export function mountZeitleiste(container, chronologie, daten, { beiFigur } = {}
     buehne.append(b);
     return [s.id, b];
   });
-
-  const detail = el('aside', 'mk-detail');
-  detail.setAttribute('aria-live', 'polite');
-  rahmen.append(buehne, el('p', 'mk-bildunterschrift', chronologie.titel));
-  container.append(rahmen, detail);
 
   const state = { auswahl: null };
 
@@ -114,6 +105,7 @@ export function mountZeitleiste(container, chronologie, daten, { beiFigur } = {}
       b.setAttribute('aria-pressed', String(sid === id));
     });
     zeigeDetail();
+    if (id) zeigeImBild(scroller, knoepfe.find(([sid]) => sid === id)[1]);
   }
 
   const escAbmelden = escSetztZurueck(() => waehle(null));
