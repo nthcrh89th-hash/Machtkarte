@@ -2,7 +2,7 @@
 // Zuständig für Knoten, Auswahl und Detailfeld. Anordnung: pyramide.js. Aussehen: CSS.
 import { zeichneKanten } from './kanten.js';
 import { berechnePyramide, B, H } from './pyramide.js';
-import { el, svgEl, geruest, zeigeImBild, abschnitt, punktwert, uebersicht, escSetztZurueck } from './ansicht.js';
+import { el, svgEl, geruest, zeigeImBild, abschnitt, uebersicht, escSetztZurueck } from './ansicht.js';
 
 /** Wirft einen Fehler mit allen Unstimmigkeiten in den Daten (auch in den Tests genutzt). */
 export function pruefe(d) {
@@ -12,7 +12,6 @@ export function pruefe(d) {
   d.knoten.forEach((k) => {
     if (!ebenen.has(k.ebene)) fehler.push(`Knoten ${k.id}: unbekannte Ebene "${k.ebene}"`);
     if (!d.typen[k.typ]) fehler.push(`Knoten ${k.id}: unbekannter Typ "${k.typ}"`);
-    if (k.machtgrad !== undefined && !(k.machtgrad >= 0 && k.machtgrad <= 5)) fehler.push(`Knoten ${k.id}: Machtgrad muss 0–5 sein`);
   });
   d.beziehungen.forEach((b) => {
     if (!knoten.has(b.von) || !knoten.has(b.nach)) fehler.push(`Beziehung ${b.von}→${b.nach}: unbekannter Knoten`);
@@ -92,7 +91,6 @@ export function mountMachtkarte(container, daten) {
       el('p', 'mk-detail-meta', `${daten.typen[k.typ]} · ${daten.ebenen[ebeneIndex.get(k.ebene)].label}`),
       el('h2', 'mk-detail-titel', k.label),
     );
-    if (k.machtgrad !== undefined) detail.append(punktwert('Machtgrad', k.machtgrad));
     if (k.quellen) detail.append(abschnitt('Machtquellen', k.quellen));
     if (k.handeln) detail.append(abschnitt('Im Roman', k.handeln, 'roman'));
     if (k.deutung) detail.append(abschnitt('Deutung', k.deutung, 'deutung'));

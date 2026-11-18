@@ -7,7 +7,7 @@
 // - ebenen: von oben (mächtig) nach unten (ohnmächtig) sortiert; untertitel ist optional.
 // - knoten.ebene verweist auf eine ebenen.id.
 // - knoten (alle Textfelder optional): quellen = Machtquellen, handeln = was die Figur im Roman tut,
-//   deutung = Interpretation, machtgrad = 0–5 (tatsächlicher Handlungsspielraum im Prozess).
+//   deutung = Interpretation.
 // - beziehungen: "von" übt Macht/Einfluss auf "nach" aus (Pfeilrichtung).
 // - Arten: formal = Amt/offizielle Rolle (Linie durchgezogen), informell = sozial/privat (gestrichelt).
 //   Eine neue Art braucht eine Regel in machtkarte.css ([data-art="…"]).
@@ -25,7 +25,6 @@ export default {
   legende: [
     'Pfeil = übt Macht oder Einfluss aus (von → nach).',
     'Durchgezogen = Amt/offizielle Rolle, gestrichelt = informell/privat.',
-    'Machtgrad 0–5 = tatsächlicher Handlungsspielraum im Prozess (Einschätzung des Analyseberichts).',
     'Dunkle Felder = Instanz, helle Felder = Figur.',
   ],
 
@@ -42,6 +41,7 @@ export default {
   ebenen: [
     { id: 'spitze', label: 'Spitze', untertitel: 'unsichtbar' },
     { id: 'apparat', label: 'Gerichtsapparat', untertitel: 'sichtbare Amtsmacht' },
+    { id: 'waechter', label: 'Wächter', untertitel: 'unterste Diener des Gerichts' },
     { id: 'vermittler', label: 'Vermittler', untertitel: 'Wissen statt Amt' },
     { id: 'umfeld', label: 'Umfeld', untertitel: 'Macht im Alltag, nicht im Prozess' },
     { id: 'angeklagte', label: 'Die Angeklagten', untertitel: 'ohnmächtig' },
@@ -50,7 +50,7 @@ export default {
   knoten: [
     // --- Spitze ---
     {
-      id: 'gericht', ebene: 'spitze', typ: 'instanz', label: 'Das Gericht', machtgrad: 5,
+      id: 'gericht', ebene: 'spitze', typ: 'instanz', label: 'Das Gericht',
       quellen: 'Formal: Gesetz, Beamtenapparat, Amtsautorität. Symbolisch: Rituale (Verhaftung, Vorladung, Verhör) und eine eigene Gerichtssprache.',
       handeln: 'Lässt K. verhaften, lädt ihn zur Untersuchung vor und verurteilt ihn am Ende, ohne dass er je eine Anklage erfährt. Die Kanzleien liegen auf Dachböden von Mietshäusern; die hohen Richter bleiben unerreichbar.',
       deutung: 'Das Gericht erscheint allmächtig, entzieht sich aber jeder konkreten Verantwortung. Es ist eher ein System als eine Person: Niemand im Roman kann sagen, wer eigentlich entscheidet. Die Forschung spricht von einer Macht, die nicht juristisch festgelegt ist.',
@@ -58,45 +58,65 @@ export default {
 
     // --- Gerichtsapparat ---
     {
-      id: 'richter', ebene: 'apparat', typ: 'figur', label: 'Untersuchungs\u00adrichter', machtgrad: 4,
+      id: 'richter', ebene: 'apparat', typ: 'figur', label: 'Untersuchungs\u00adrichter',
       quellen: 'Formal: Amt im Verfahren. Informell: Gunst, die er verteilt (z. B. an den Studenten).',
       handeln: 'Leitet K.s erste Untersuchung an einem Sonntag in einem Vorstadthaus. Hält K. für einen „Zimmermaler“ und blättert in einem abgegriffenen Heft. K. bemerkt, dass das ganze Publikum Abzeichen trägt wie der Richter.',
       deutung: 'Er verkörpert die sichtbare Macht des Gerichts, ist aber nur ein niedriger Beamter. Außerhalb des Systems hat er keine eigene Kontrolle.',
     },
     {
-      id: 'student', ebene: 'apparat', typ: 'figur', label: 'Student Berthold', machtgrad: 3,
+      id: 'student', ebene: 'apparat', typ: 'figur', label: 'Student Berthold',
       quellen: 'Formal: kaum ein Amt, studiert Recht. Informell: Günstling des Untersuchungsrichters; ihm wird eine große Zukunft vorhergesagt.',
       handeln: 'Trägt die Frau des Gerichtsdieners vor K.s Augen zum Untersuchungsrichter fort. Der Gerichtsdiener muss das hinnehmen, weil er um seine Stelle fürchtet.',
       deutung: 'Er hat keine formale Stellung, aber durch seine Nähe zum Richter große, verdeckte Macht. Er zeigt, dass im Gericht Beziehungen mehr zählen als Ämter.',
     },
     {
-      id: 'diener', ebene: 'apparat', typ: 'figur', label: 'Gerichts\u00addiener', machtgrad: 2,
+      id: 'pruegler', ebene: 'apparat', typ: 'figur', label: 'Der Prügler',
+      quellen: 'Formal: Vollstrecker von Strafen des Gerichts.',
+      handeln: 'Bestraft die Wächter in der Rumpelkammer der Bank mit einer Rute und lehnt K.s Bestechungsversuch ab. Als K. am nächsten Tag die Tür wieder öffnet, ist die Szene unverändert.',
+      deutung: 'Das Gericht straft nach unten. Die Strafe ist ein Ritual, das niemand aufhalten kann.',
+    },
+    {
+      id: 'diener', ebene: 'apparat', typ: 'figur', label: 'Gerichts\u00addiener',
       quellen: 'Formal: unteres Dienstamt. Informell: Ortskenntnis in den Kanzleien.',
       handeln: 'Führt K. durch die Kanzleien auf dem Dachboden. Klagt, dass der Student ihm die Frau wegnimmt – er kann sich nicht wehren, ohne seine Stelle zu verlieren.',
       deutung: 'Er gehört zum Apparat und ist doch selbst dessen Opfer. Sein Amt verschafft ihm Zugang, aber keinen Schutz.',
     },
 
+    // --- Wächter ---
+    {
+      id: 'franz', ebene: 'waechter', typ: 'figur', label: 'Wächter Franz',
+      quellen: 'Formal: unterstes Dienstamt im Gericht. Symbolisch: Er tritt im Auftrag des Gerichts auf.',
+      handeln: 'Verhaftet K. am Morgen in seinem Zimmer in der Pension von Frau Grubach, weiß aber selbst nicht, wessen K. beschuldigt ist. Die Wächter essen K.s Frühstück und wollen seine Wäsche in Verwahrung nehmen; seine Legitimationspapiere wischen sie beiseite: „Was kümmern uns denn die?“ Weil K. sich bei der ersten Untersuchung über sie beschwert, wird Franz später in einer Rumpelkammer der Bank vom Prügler bestraft und schreit dabei.',
+      deutung: 'Er steht auf der untersten Stufe des Apparats: Er übt Macht über K. aus und ist selbst ohnmächtig. K.s Beschwerde trifft nur die Untersten.',
+    },
+    {
+      id: 'willem', ebene: 'waechter', typ: 'figur', label: 'Wächter Willem',
+      quellen: 'Formal: unterstes Dienstamt im Gericht. Symbolisch: Er tritt im Auftrag des Gerichts auf.',
+      handeln: 'Verhaftet K. zusammen mit Franz in der Pension von Frau Grubach, weiß ebenfalls nicht, wessen K. beschuldigt ist, und wischt mit Franz die Legitimationspapiere beiseite: „Was kümmern uns denn die?“ Weil K. sich bei der ersten Untersuchung über die Wächter beschwert, wird auch Willem in der Rumpelkammer der Bank vom Prügler bestraft.',
+      deutung: 'Wie Franz gehört er zur untersten Stufe des Apparats: mächtig gegenüber K., ohnmächtig gegenüber dem Gericht.',
+    },
+
     // --- Vermittler ---
     {
-      id: 'huld', ebene: 'vermittler', typ: 'figur', label: 'Advokat Huld', machtgrad: 1,
+      id: 'huld', ebene: 'vermittler', typ: 'figur', label: 'Advokat Huld',
       quellen: 'Formal: Titel als Advokat. Informell: Fachwissen, angebliche Beziehungen zu Beamten (z. B. zum Kanzleidirektor).',
       handeln: 'Empfängt K. krank im Bett, redet viel über seine Verbindungen, reicht aber keine erkennbare Eingabe ein. Demütigt den Kaufmann Block vor K. Schließlich kündigt K. ihm.',
       deutung: 'Seine Macht ist Schein. Er kann den Prozess weder stoppen noch beeinflussen, hält seine Klienten aber in Abhängigkeit – das ist seine einzige echte Macht.',
     },
     {
-      id: 'leni', ebene: 'vermittler', typ: 'figur', label: 'Leni', machtgrad: 2,
+      id: 'leni', ebene: 'vermittler', typ: 'figur', label: 'Leni',
       quellen: 'Informell: Nähe zu K. (Verführung), Wissen über das Gericht, Stellung im Haus des Advokaten.',
       handeln: 'Pflegerin im Haushalt des Advokaten. Lockt K. vom Gespräch mit dem Kanzleidirektor weg und rät ihm: „gegen dieses Gericht kann man sich ja nicht wehren, man muß das Geständnis machen.“',
       deutung: 'Sie hat Einfluss auf K.s Gefühle und Entscheidungen, aber nicht auf das Verfahren. Ihre Macht bleibt an Huld gebunden.',
     },
     {
-      id: 'titorelli', ebene: 'vermittler', typ: 'figur', label: 'Maler Titorelli', machtgrad: 2,
+      id: 'titorelli', ebene: 'vermittler', typ: 'figur', label: 'Maler Titorelli',
       quellen: 'Informell: Insiderwissen; kennt als Gerichtsmaler viele Richter. Die Stelle hat er von seinem Vater geerbt.',
       handeln: 'Erklärt K. in seinem engen Atelier die drei Möglichkeiten: wirklicher Freispruch, scheinbarer Freispruch, Verschleppung. Einen wirklichen Freispruch habe er nie erlebt.',
       deutung: 'Er beschreibt Macht, besitzt aber keine. Seine Erklärungen sind eher Modelle des Systems als Hilfe – sie zeigen, dass es keinen echten Ausweg gibt.',
     },
     {
-      id: 'frau', ebene: 'vermittler', typ: 'figur', label: 'Frau des Gerichts\u00addieners', machtgrad: 1,
+      id: 'frau', ebene: 'vermittler', typ: 'figur', label: 'Frau des Gerichts\u00addieners',
       quellen: 'Informell: Beziehungen zu Beamten, Wissen über die Gerichtsvorgänge; wohnt im Gerichtssaal.',
       handeln: 'Bietet K. ihre Hilfe an, zeigt ihm die Bücher des Untersuchungsrichters und wird dann vom Studenten zum Richter getragen.',
       deutung: 'Sie wirkt wie eine Vermittlerin, ist aber selbst ein Spielball der Männer im Apparat.',
@@ -104,25 +124,25 @@ export default {
 
     // --- Umfeld ---
     {
-      id: 'onkel', ebene: 'umfeld', typ: 'figur', label: 'Onkel Karl', machtgrad: 1,
+      id: 'onkel', ebene: 'umfeld', typ: 'figur', label: 'Onkel Karl',
       quellen: 'Informell: familiäre Autorität (früher K.s Vormund), Bekanntschaft mit dem Advokaten Huld.',
       handeln: 'Kommt vom Land in die Stadt, bringt K. zu Huld und macht ihm Vorwürfe, als K. während des Besuchs des Kanzleidirektors mit Leni verschwindet.',
       deutung: 'Er glaubt, die Verteidigung zu organisieren, hat aber keine juristische Macht. Seine Stärke ist Druck innerhalb der Familie.',
     },
     {
-      id: 'bank', ebene: 'umfeld', typ: 'figur', label: 'Bank\u00addirektion', machtgrad: 2,
+      id: 'bank', ebene: 'umfeld', typ: 'figur', label: 'Bank\u00addirektion',
       quellen: 'Formal: Hierarchie im Beruf. Informell: Rivalität – der Direktor-Stellvertreter will K. verdrängen.',
       handeln: 'Der Direktor-Stellvertreter nutzt K.s Ablenkung durch den Prozess und übernimmt seine Kunden. K. wird beauftragt, einem italienischen Geschäftsfreund den Dom zu zeigen.',
       deutung: 'Im Beruf sind sie K. überlegen, im Prozess spielen sie keine Rolle. Der Prozess frisst auch K.s berufliche Macht auf.',
     },
     {
-      id: 'grubach', ebene: 'umfeld', typ: 'figur', label: 'Frau Grubach', machtgrad: 1,
+      id: 'grubach', ebene: 'umfeld', typ: 'figur', label: 'Frau Grubach',
       quellen: 'Informell: Stellung als Vermieterin, soziale Nähe zu K.',
       handeln: 'Spricht mit K. über die Verhaftung und deutet an, Fräulein Bürstner habe einen zweifelhaften Lebenswandel – K. reagiert gereizt.',
       deutung: 'Sie übt soziale Kontrolle im Alltag aus (Gerede, Moral), hat aber keinerlei Einfluss auf den Prozess.',
     },
     {
-      id: 'buerstner', ebene: 'umfeld', typ: 'figur', label: 'Fräulein Bürstner', machtgrad: 1,
+      id: 'buerstner', ebene: 'umfeld', typ: 'figur', label: 'Fräulein Bürstner',
       quellen: 'Informell: Nähe, Anziehung; ihre einzige Macht ist, sich K. zu entziehen.',
       handeln: 'Schreibmaschinistin, Nachbarin in der Pension. K. erzählt ihr nachts von der Verhaftung und küsst sie gegen ihren Willen. Danach meidet sie ihn; ihre Freundin Fräulein Montag zieht zu ihr ins Zimmer.',
       deutung: 'Sie steht für die bürgerliche Ordnung, aus der K. herausfällt. Hier ist K. selbst derjenige, der Macht ausübt.',
@@ -130,7 +150,7 @@ export default {
 
     // --- Angeklagte ---
     {
-      id: 'k', ebene: 'angeklagte', typ: 'figur', label: 'Josef K.', machtgrad: 1,
+      id: 'k', ebene: 'angeklagte', typ: 'figur', label: 'Josef K.',
       quellen: 'Formal: Prokurist einer Bank (verliert an Bedeutung). Informell: Bildung, Selbstbewusstsein, Logik.',
       handeln: 'Protestiert bei der ersten Untersuchung gegen „eine große Organisation“ hinter dem Gericht, nimmt einen Anwalt, sucht Helfer, kündigt dem Advokaten. Am Vorabend seines 31. Geburtstags wird er von zwei Herren in einem Steinbruch hingerichtet: „Wie ein Hund!“',
       deutung: 'Er bleibt reaktiv und verliert Schritt für Schritt die Kontrolle. Ohne offiziellen Status im Gericht geht seine Macht gegen null.',
@@ -147,6 +167,11 @@ export default {
     { von: 'gericht', nach: 'k', art: 'formal', text: 'verhaftet, klagt an, verurteilt' },
     { von: 'gericht', nach: 'richter', art: 'formal', text: 'setzt ihn ein – er ist nur ein niedriger Teil des Apparats' },
     { von: 'gericht', nach: 'titorelli', art: 'formal', text: 'Auftraggeber: er malt die Richter' },
+    { von: 'gericht', nach: 'pruegler', art: 'formal', text: 'Vollstrecker seiner Strafen' },
+    { von: 'pruegler', nach: 'franz', art: 'formal', text: 'bestraft ihn wegen K.s Beschwerde' },
+    { von: 'pruegler', nach: 'willem', art: 'formal', text: 'bestraft ihn wegen K.s Beschwerde' },
+    { von: 'franz', nach: 'k', art: 'formal', text: 'verhaftet ihn' },
+    { von: 'willem', nach: 'k', art: 'formal', text: 'verhaftet ihn' },
     { von: 'richter', nach: 'diener', art: 'formal', text: 'Vorgesetzter' },
     { von: 'richter', nach: 'student', art: 'informell', text: 'Günstling' },
     { von: 'richter', nach: 'k', art: 'formal', text: 'verhört ihn' },

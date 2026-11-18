@@ -33,7 +33,7 @@ export default {
     },
     {
       id: 'verhaftung', titel: 'Verhaftung', kapitel: 'Verhaftung', spielraum: 3,
-      figuren: ['gericht', 'grubach', 'buerstner'],
+      figuren: ['gericht', 'franz', 'willem', 'grubach', 'buerstner'],
       versuch: 'Der Aufseher verhört ihn im Zimmer von Fräulein Bürstner, in der Pension von Frau Grubach. K. hält alles für einen Scherz, sucht seine Legitimationspapiere und will den Staatsanwalt Hasterer, einen Bekannten, anrufen.',
       scheitern: 'Die Wächter wischen die Papiere beiseite: „Was kümmern uns denn die?“ Er ist verhaftet, darf aber weiter in die Bank gehen.',
       deutung: 'Die Ordnung, auf die K. vertraut (Ausweis, Beziehungen, Rechtsstaat), gilt plötzlich nicht mehr. Das Gericht dringt in sein Schlafzimmer ein – in den privatesten Raum.',
@@ -54,7 +54,7 @@ export default {
     },
     {
       id: 'pruegler', titel: 'Der Prügler', kapitel: 'Der Prügler', spielraum: 2,
-      figuren: ['gericht', 'bank'],
+      figuren: ['gericht', 'pruegler', 'franz', 'willem', 'bank'],
       versuch: 'K. hatte sich in der Untersuchung über die Wächter beschwert. In einer Rumpelkammer seiner Bank sieht er, wie sie dafür geprügelt werden, und will den Prügler bestechen.',
       scheitern: 'Der Prügler lässt sich nicht bestechen. Am nächsten Tag öffnet K. die Tür erneut – die Szene ist unverändert.',
       deutung: 'Die Gerichtswelt sitzt jetzt mitten in K.s Bank. Seine Anklage trifft nur die Untersten; er selbst wird zum Mitverursacher.',

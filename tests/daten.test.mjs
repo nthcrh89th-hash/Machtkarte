@@ -10,6 +10,11 @@ import { berechnePyramide } from '../pyramide.js';
 
 test('Machtkarte-Daten sind stimmig', () => assert.doesNotThrow(() => pruefe(daten)));
 
+test('Kein Knoten hat einen Machtgrad; die Wächter-Ebene hat genau Franz und Willem', () => {
+  assert.ok(daten.knoten.every((k) => !('machtgrad' in k)));
+  assert.deepEqual(daten.knoten.filter((k) => k.ebene === 'waechter').map((k) => k.id), ['franz', 'willem']);
+});
+
 test('Chronologie verweist nur auf vorhandene Figuren', () => assert.doesNotThrow(() => pruefeChronologie(chronologie, daten)));
 
 test('Unbekannte Figur in der Chronologie wird gemeldet', () => {

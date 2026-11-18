@@ -3,7 +3,7 @@
 import { svgEl, stufe } from './ansicht.js';
 
 export const B = 1000; // Breite der Bühne in Zeichenmaß
-export const H = 720;  // Höhe der Bühne in Zeichenmaß
+export const H = 900;  // Höhe der Bühne in Zeichenmaß
 
 const MIN_ZELLE = 110; // schmaler als das → Knoten der Stufe versetzt in zwei Reihen
 const OBEN = 30, UNTEN = H - 30, HALB = 470, KOPF = 110;
@@ -33,7 +33,7 @@ export function berechnePyramide(d) {
     const zelle = w / ks.length, versetzt = ks.length > 2 && zelle < MIN_ZELLE;
     ks.forEach((k, j) => {
       // Versetzt: abwechselnd höher/tiefer, dafür darf jeder Knoten doppelt so breit werden.
-      const dy = versetzt ? (j % 2 ? 0.14 : -0.1) * h : 0;
+      const dy = versetzt ? (j % 2 ? 0.17 : -0.13) * h : 0;
       pos[k.id] = { x: mitte(j, ks.length, B / 2 - w / 2, B / 2 + w / 2), y: y + dy, breite: zelle * (versetzt ? 1.9 : 0.95) };
     });
   });
