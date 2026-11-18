@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chronologie des Scheiterns – Der Process</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="seite.css">
+  <link rel="stylesheet" href="machtkarte.css">
+  <link rel="stylesheet" href="zeitleiste.css">
+  <link rel="stylesheet" href="themes.css">
+</head>
+<body>
+  <nav class="kopfleiste" aria-label="Seiten">
+    <a href="index.html">← Startseite</a>
+    <a href="machtkarte.html">Machtkarte</a>
+    <a href="chronologie.html" aria-current="page">Chronologie des Scheiterns</a>
+  </nav>
+  <main id="zeitleiste" data-theme="hierarchie"></main>
+
+  <script type="module">
+    // Nur Bedienung: Figur anklicken → Machtkarte mit dieser Figur. Inhalte und Darstellung liegen in den Modulen.
+    import { mountZeitleiste } from './zeitleiste.js';
+    import daten from './daten.js';
+    import chronologie from './chronologie.js';
+
+    mountZeitleiste(document.getElementById('zeitleiste'), chronologie, daten, {
+      beiFigur: (id) => { location.href = `machtkarte.html#figur-${id}`; },
+    });
+  </script>
+</body>
+</html>

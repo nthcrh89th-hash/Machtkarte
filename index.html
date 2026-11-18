@@ -6,8 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Schul-Website (Deutsch-Grundkurs) zu Franz Kafkas Roman „Der Process“: Machtkarte, Chronologie der Macht und mehr.">
 <script>
-  // Alte Links (…/Machtkarte/#machtkarte, #zeitleiste) führten früher direkt zur Karte: weiterleiten.
-  if (/^#(machtkarte|zeitleiste)$/.test(location.hash)) location.replace("machtkarte.html" + location.hash);
+  // Alte Links (…/Machtkarte/#machtkarte, #zeitleiste) führten früher direkt zur Ansicht: weiterleiten.
+  if (location.hash === "#machtkarte") location.replace("machtkarte.html");
+  if (location.hash === "#zeitleiste") location.replace("chronologie.html");
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -182,10 +183,10 @@ a.tuer:hover, a.tuer:focus-visible { transform: none; box-shadow: 0 10px 40px rg
 const UNTERSEITEN = [
   { titel: "Machtkarte",
     text: "Wer übt im Roman Macht über wen aus? Eine Pyramide von der unsichtbaren Spitze des Gerichts bis zu den Angeklagten; die Figuren lassen sich anklicken.",
-    href: "machtkarte.html#machtkarte" },
+    href: "machtkarte.html" },
   { titel: "Chronologie der Macht",
     text: "K.s Versuche, seine Lage zu verbessern, und wie sein Handlungsspielraum von der Verhaftung bis zum Ende sinkt (10 Stationen).",
-    href: "machtkarte.html#zeitleiste" },
+    href: "chronologie.html" },
   { titel: "Räume des Gerichts",
     text: "Wo das Gericht tagt: Kanzleien auf Dachböden, enge Flure, Räume ohne Ordnung.",
     href: null },

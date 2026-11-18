@@ -1,0 +1,8 @@
+/* Gemeinsam für machtkarte.html und chronologie.html: Seitenrahmen und Kopfleiste (Farben der Startseite). */
+body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+body > main { flex: 1; }
+.kopfleiste { display: flex; flex-wrap: wrap; gap: .4rem 1.4rem; align-items: center; padding: .6rem 1.5rem; font: .85rem system-ui, sans-serif; background: #111; color: #eee; }
+.kopfleiste a { color: #f2b705; text-decoration: none; }
+.kopfleiste a:hover { text-decoration: underline; }
+.kopfleiste a:focus-visible { outline: 2px solid #f2b705; outline-offset: 3px; }
+.kopfleiste a[aria-current="page"] { color: #eee; text-decoration: none; cursor: default; }
