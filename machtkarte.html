@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Machtkarte – Der Process</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="machtkarte.css">
+  <link rel="stylesheet" href="zeitleiste.css">
+  <link rel="stylesheet" href="themes.css">
+  <style>
+    body { margin: 0; }
+    .ansicht { min-height: calc(100vh - 2.9rem); box-sizing: border-box; }
+    .ansicht[hidden] { display: none; }
+    .stilwahl { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; padding: .6rem 1.5rem; font: .85rem system-ui, sans-serif; background: #111; color: #eee; }
+    .stilwahl span { margin-left: .6rem; }
+    .stilwahl .zurueck { color: #f2b705; text-decoration: none; margin-right: .4rem; }
+    .stilwahl .zurueck:hover { text-decoration: underline; }
+    .stilwahl .zurueck:focus-visible { outline: 2px solid #f2b705; outline-offset: 3px; }
+    .stilwahl button { font: inherit; padding: .3rem .8rem; border: 1px solid #666; background: #222; color: #eee; cursor: pointer; border-radius: 4px; }
+    .stilwahl button[aria-pressed="true"] { background: #eee; color: #111; }
+  </style>
+</head>
+<body>
+  <nav class="stilwahl" id="stilwahl" aria-label="Ansicht wählen"></nav>
+  <main id="machtkarte" class="ansicht" data-theme="hierarchie"></main>
+  <main id="zeitleiste" class="ansicht" data-theme="hierarchie" hidden></main>
+
+  <script type="module">
+    // Nur Bedienoberfläche: Ansicht wählen. Inhalte und Darstellung liegen in den Modulen.
+    import { mountMachtkarte } from './machtkarte.js';
+    import { mountZeitleiste } from './zeitleiste.js';
+    import daten from './daten.js';
+    import chronologie from './chronologie.js';
+
+    const ANSICHTEN = { machtkarte: 'Machtkarte', zeitleiste: 'Zeitleiste' };
+
+    const wahl = document.getElementById('stilwahl');
+    const fenster = { machtkarte: document.getElementById('machtkarte'), zeitleiste: document.getElementById('zeitleiste') };
+    const ansichtAusHash = () => (ANSICHTEN[location.hash.slice(1)] ? location.hash.slice(1) : 'machtkarte');
+
+    const karte = mountMachtkarte(fenster.machtkarte, daten);
+    // Figur in der Zeitleiste angeklickt → in der Machtkarte zeigen
+    mountZeitleiste(fenster.zeitleiste, chronologie, daten, {
+      beiFigur: (id) => { setzeAnsicht('machtkarte'); karte.waehle(id); },
+    });
+
+    wahl.append(Object.assign(document.createElement('a'), { href: 'index.html', className: 'zurueck', textContent: '← Startseite' }));
+    wahl.append(Object.assign(document.createElement('span'), { textContent: 'Ansicht:' }));
+    const knoepfe = Object.entries(ANSICHTEN).map(([key, label]) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.textContent = label;
+      b.addEventListener('click', () => setzeAnsicht(key));
+      wahl.append(b);
+      return [key, b];
+    });
+
+    function setzeAnsicht(name) {
+      Object.entries(fenster).forEach(([k, f]) => { f.hidden = k !== name; });
+      knoepfe.forEach(([key, b]) => b.setAttribute('aria-pressed', String(key === name)));
+      if (location.hash.slice(1) !== name) history.replaceState(null, '', `#${name}`);
+    }
+
+    addEventListener('hashchange', () => setzeAnsicht(ansichtAusHash()));
+    setzeAnsicht(ansichtAusHash());
+  </script>
+</body>
+</html>

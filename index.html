@@ -1,64 +1,314 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Machtkarte – Der Process</title>
-  <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="machtkarte.css">
-  <link rel="stylesheet" href="zeitleiste.css">
-  <link rel="stylesheet" href="themes.css">
-  <style>
-    body { margin: 0; }
-    .ansicht { min-height: calc(100vh - 2.9rem); box-sizing: border-box; }
-    .ansicht[hidden] { display: none; }
-    .stilwahl { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; padding: .6rem 1.5rem; font: .85rem system-ui, sans-serif; background: #111; color: #eee; }
-    .stilwahl span { margin-left: .6rem; }
-    .stilwahl button { font: inherit; padding: .3rem .8rem; border: 1px solid #666; background: #222; color: #eee; cursor: pointer; border-radius: 4px; }
-    .stilwahl button[aria-pressed="true"] { background: #eee; color: #111; }
-  </style>
+<meta charset="utf-8">
+<title>Der Process – Macht, Ohnmacht, Scheitern</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Schul-Website (Deutsch-Grundkurs) zu Franz Kafkas Roman „Der Process“: Machtkarte, Chronologie der Macht und mehr.">
+<script>
+  // Alte Links (…/Machtkarte/#machtkarte, #zeitleiste) führten früher direkt zur Karte: weiterleiten.
+  if (/^#(machtkarte|zeitleiste)$/.test(location.hash)) location.replace("machtkarte.html" + location.hash);
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== 1. Farben und Grundwerte (wie die Machtkarte) ===== */
+:root {
+  --grund: #0b0d11;
+  --flaeche: #1b2027;
+  --blaugrau: #8c98a3;
+  --salbei: #cfd6cd;
+  --weiss: #fff;
+  --gelb: #f2b705;
+  --schraeg: clamp(24px, 4vw, 64px); /* Höhe der schrägen Abschnittskanten */
+  --s: .3;                           /* Schatten-Stärke 0..1, setzt das Skript beim Scrollen */
+  --schrift: "Montserrat", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html { background: var(--grund); }
+body {
+  margin: 0; color: var(--salbei); background: var(--grund);
+  font: 400 1.0625rem/1.65 var(--schrift);
+  overflow-x: hidden;
+}
+h1, h2, h3, p, ul, figure, blockquote, dl, dd { margin: 0; padding: 0; }
+ul { list-style: none; }
+a { color: var(--gelb); text-underline-offset: .2em; }
+a:focus-visible { outline: 3px solid var(--gelb); outline-offset: 4px; }
+.mitte { width: min(1120px, 100% - 2.5rem); margin-inline: auto; }
+
+/* ===== 2. Bühne: K.s geordnete Welt (Raster) und der wachsende Schatten ===== */
+/* Raster aus geraden Linien = Aktenordnung der Bank: überschaubar, rational. */
+.buehne {
+  position: relative; overflow: hidden; isolation: isolate;
+  background-image:
+    linear-gradient(rgba(140,152,163,.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(140,152,163,.14) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+/* Schatten wächst beim Scrollen über das Raster: das Gericht dringt in K.s
+   geordnete Welt ein. Die Kante ist schräg, weil das Gericht keine rechten Winkel kennt. */
+.buehne::after {
+  content: ""; position: absolute; inset: 0 0 0 auto; width: 65%; z-index: 0;
+  background: linear-gradient(100deg, rgba(0,0,0,0), rgba(0,0,0,.85));
+  clip-path: polygon(60% 0, 100% 0, 100% 100%, 15% 100%);
+  transform: scaleX(calc(.35 + var(--s) * .65)); transform-origin: right;
+  pointer-events: none;
+}
+.hero, .tueren-bereich { position: relative; z-index: 1; }
+
+/* ===== 3. Hero ===== */
+.hero {
+  display: grid; gap: 1.5rem; align-items: center;
+  padding-block: clamp(2rem, 5vw, 3.5rem) 1.5rem;
+}
+.kicker {
+  font-weight: 700; font-size: .85rem; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--blaugrau);
+}
+/* Titel leicht geneigt mit gestaffeltem Schatten: erste Verzerrung der Ordnung,
+   schon in der Überschrift beginnt die schräge Perspektive der Gerichtswelt. */
+h1 {
+  font: 400 clamp(3.4rem, 11vw, 8.5rem)/.95 "Anton", Impact, "Arial Narrow", sans-serif;
+  text-transform: uppercase; letter-spacing: .02em; color: var(--weiss);
+  transform: skewX(-5deg); transform-origin: left bottom;
+  text-shadow: .05em .06em 0 #3a444d, .1em .12em 0 #232a33;
+  margin-block: .4rem .6rem;
+}
+.thema { font-weight: 700; font-size: clamp(1.1rem, 2.4vw, 1.5rem); color: var(--gelb); }
+.einstieg { max-width: 38em; margin-top: 1rem; }
+/* Flur: links gerade Aktenordner (Rational), rechts kippende Fluchtlinien,
+   ein Türspalt voll Licht und die riesige Silhouette (Irrational). Nur ab Tablet-Breite sichtbar. */
+.flur { display: none; width: 100%; max-height: 420px; }
+.flur .silhouette { transform-box: fill-box; transform-origin: 50% 100%; transform: scale(calc(1 + var(--s) * .35)); }
+@media (min-width: 900px) {
+  .hero { grid-template-columns: 1.25fr .85fr; }
+  .flur { display: block; }
+}
+
+/* ===== 4. Türen (Navigation) ===== */
+.tueren-bereich { padding-block: 1rem 3rem; }
+h2 { font-weight: 700; font-size: clamp(1.4rem, 3vw, 1.9rem); line-height: 1.25; color: var(--weiss); }
+.tueren-hinweis { max-width: 44em; margin-top: .4rem; color: var(--salbei); }
+.tueren { display: grid; gap: 1.25rem; margin-top: 1.5rem; grid-template-columns: 1fr; }
+@media (min-width: 600px)  { .tueren { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1100px) {
+  .tueren { grid-template-columns: repeat(4, 1fr); }
+  .tueren li:nth-child(even) { margin-top: 1.5rem; } /* Türen sitzen nicht auf einer Linie: Flur ohne klare Ordnung */
+}
+.tueren li { perspective: 900px; }
+.tueren li:nth-child(1) { --dreh: 5deg;  --ursprung: left center; }
+.tueren li:nth-child(2) { --dreh: -4deg; --ursprung: right center; }
+.tueren li:nth-child(3) { --dreh: 6deg;  --ursprung: left center; }
+.tueren li:nth-child(4) { --dreh: -5deg; --ursprung: right center; }
+/* Jede Kachel ist eine Tür (Türhüter-Legende „Vor dem Gesetz“): leicht perspektivisch
+   verkantet; bei Hover/Fokus richtet sie sich auf und der Lichtspalt unter der Tür leuchtet. */
+.tuer {
+  position: relative; display: flex; flex-direction: column; gap: .5rem; height: 100%;
+  min-height: 15rem; padding: 1.25rem 1.7rem 1.4rem 1.1rem; /* rechts nur knapp Platz für die Klinke */
+  color: var(--salbei); text-decoration: none; background: linear-gradient(90deg, var(--flaeche), #232a33);
+  border: 2px solid var(--weiss); border-bottom: 6px solid var(--gelb);
+  transform: rotateY(var(--dreh)); transform-origin: var(--ursprung);
+  transition: transform .45s ease, box-shadow .45s ease;
+}
+.tuer::after { /* Türklinke */
+  content: ""; position: absolute; right: .55rem; top: 50%; width: 10px; height: 10px;
+  border-radius: 50%; background: var(--gelb);
+}
+a.tuer:hover, a.tuer:focus-visible { transform: none; box-shadow: 0 10px 40px rgba(242,183,5,.35); }
+.tuer .nr { font-size: .8rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--blaugrau); }
+.tuer h3 { font-size: 1.3rem; line-height: 1.25; color: var(--weiss); }
+.tuer p { font-size: .98rem; line-height: 1.55; }
+.tuer .hinweis { margin-top: auto; padding-top: .6rem; font-weight: 700; font-size: .9rem; color: var(--gelb); }
+/* Platzhalter: verschlossene Tür, ohne Lichtspalt, gestrichelt, nicht klickbar */
+.tuer[aria-disabled="true"] { border-style: dashed; border-bottom-color: var(--blaugrau); background: var(--grund); cursor: default; }
+.tuer[aria-disabled="true"]::after { background: var(--blaugrau); }
+.tuer[aria-disabled="true"] .hinweis { color: var(--salbei); }
+
+/* ===== 5. Abschnitte: die Gerichtswelt kippt ===== */
+/* Die Flächen unter den Türen haben schräge Kanten statt Raster: Wir verlassen die Bank,
+   die Räume werden schief wie die Kanzleien auf den Dachböden. Die Texte bleiben gerade und lesbar. */
+.abschnitt { position: relative; isolation: isolate; padding-block: calc(var(--schraeg) + 2rem); }
+.abschnitt::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; background: var(--flaeche);
+  clip-path: polygon(0 var(--schraeg), 100% 0, 100% calc(100% - var(--schraeg)), 0 100%);
+}
+.abschnitt.gegen::before { clip-path: polygon(0 0, 100% var(--schraeg), 100% 100%, 0 calc(100% - var(--schraeg))); background: var(--grund); }
+.abschnitt .mitte { display: grid; gap: 1.5rem 3rem; }
+@media (min-width: 900px) { .abschnitt .mitte { grid-template-columns: 1fr 1.6fr; align-items: start; } }
+.text > * + * { margin-top: 1rem; }
+.marke {
+  display: inline-block; margin-bottom: .6rem; padding: .15rem .6rem; font-size: .78rem; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--grund); background: var(--salbei);
+}
+.marke.deutung { background: var(--gelb); }
+.deutungsbox { padding: 1rem 1.2rem; border-left: 5px solid var(--gelb); background: var(--grund); }
+.abschnitt .zitate { grid-template-columns: 1fr; gap: 1rem; margin-top: 1.5rem; }
+@media (min-width: 700px) { .abschnitt .zitate { grid-template-columns: repeat(3, 1fr); } }
+.zitate blockquote { padding: 1rem 1.1rem; border: 2px solid var(--blaugrau); background: var(--grund); }
+.zitate p { font-size: 1.25rem; font-weight: 700; line-height: 1.35; color: var(--weiss); }
+.zitate footer { margin-top: .6rem; font-size: .9rem; color: var(--blaugrau); }
+.fakten { display: grid; grid-template-columns: auto 1fr; gap: .5rem 1.2rem; }
+.fakten dt { font-weight: 700; color: var(--gelb); }
+
+/* ===== 6. Fußzeile: wieder gerade Linien ===== */
+.fuss { padding-block: 2.5rem 3rem; border-top: 2px solid var(--blaugrau); font-size: .95rem; }
+.fuss h2 { font-size: 1.1rem; margin-bottom: .6rem; }
+.fuss li + li { margin-top: .35rem; }
+.fuss .gruppe { margin-top: 1.5rem; }
+.fuss .projekt { margin-top: 1.5rem; color: var(--blaugrau); }
+
+/* ===== 7. Bewegung abschalten ===== */
+@media (prefers-reduced-motion: reduce) {
+  .tuer, .buehne::after { transition: none; }
+  a.tuer:hover, a.tuer:focus-visible { transform: rotateY(var(--dreh)); }
+}
+</style>
 </head>
 <body>
-  <nav class="stilwahl" id="stilwahl" aria-label="Ansicht wählen"></nav>
-  <main id="machtkarte" class="ansicht" data-theme="hierarchie"></main>
-  <main id="zeitleiste" class="ansicht" data-theme="hierarchie" hidden></main>
 
-  <script type="module">
-    // Nur Bedienoberfläche: Ansicht wählen. Inhalte und Darstellung liegen in den Modulen.
-    import { mountMachtkarte } from './machtkarte.js';
-    import { mountZeitleiste } from './zeitleiste.js';
-    import daten from './daten.js';
-    import chronologie from './chronologie.js';
+<div class="buehne">
+  <header class="hero mitte">
+    <div>
+      <p class="kicker">Deutsch-Grundkurs · Franz Kafka</p>
+      <h1>Der Process</h1>
+      <p class="thema">Macht, Ohnmacht, Scheitern</p>
+      <p class="einstieg">Ein Bankprokurist wird eines Morgens verhaftet und erfährt nie, wessen man ihn beschuldigt. Diese Seiten fragen, wer in diesem Roman Macht ausübt, wie K.s Spielraum schrumpft und wie man das deuten kann.</p>
+    </div>
+    <!-- dekorativ: Inhalt steht im Text, daher aria-hidden -->
+    <svg class="flur" viewBox="0 0 420 460" aria-hidden="true" focusable="false">
+      <defs>
+        <pattern id="akten" width="40" height="36" patternUnits="userSpaceOnUse">
+          <rect x="4" y="4" width="32" height="28" fill="none" stroke="#8c98a3" stroke-width="1.5"/>
+          <line x1="4" y1="12" x2="36" y2="12" stroke="#8c98a3" stroke-width="1"/>
+        </pattern>
+        <radialGradient id="licht"><stop offset="0" stop-color="#f2b705" stop-opacity=".55"/><stop offset="1" stop-color="#f2b705" stop-opacity="0"/></radialGradient>
+      </defs>
+      <rect x="0" y="20" width="160" height="360" fill="url(#akten)"/>
+      <circle cx="316" cy="216" r="190" fill="url(#licht)"/>
+      <path d="M170 0 L298 176 M170 460 L298 256 M420 0 L334 186 M420 460 L334 246" stroke="#8c98a3" stroke-width="2" fill="none"/>
+      <polygon points="298,176 334,186 334,246 298,256" fill="#1b2027" stroke="#fff" stroke-width="2"/>
+      <rect x="312" y="196" width="6" height="52" fill="#f2b705"/>
+      <g class="silhouette"><circle cx="392" cy="150" r="34" fill="#000"/><path d="M340 460 C340 300 352 215 392 200 C432 215 450 300 450 460 Z" fill="#000"/></g>
+      <g stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round">
+        <circle cx="215" cy="330" r="7"/><path d="M215 337 V372 M215 346 L203 362 M215 346 L227 362 M215 372 L207 392 M215 372 L223 392"/>
+      </g>
+      <g font-family="Montserrat, sans-serif" font-size="12" font-weight="700" letter-spacing="2" fill="#cfd6cd">
+        <text x="8" y="408">ORDNUNG</text><text x="250" y="440">SCHATTEN</text>
+      </g>
+    </svg>
+  </header>
 
-    const ANSICHTEN = { machtkarte: 'Machtkarte', zeitleiste: 'Zeitleiste' };
+  <nav class="tueren-bereich mitte" aria-labelledby="tueren-titel">
+    <h2 id="tueren-titel">Die Türen: Unterseiten</h2>
+    <p class="tueren-hinweis">In Kafkas Legende „Vor dem Gesetz“ steht eine Tür offen und wird dennoch bewacht. Hier stehen die Türen offen; zwei sind noch verschlossen.</p>
+    <ul class="tueren" id="tueren"></ul>
+  </nav>
+</div>
 
-    const wahl = document.getElementById('stilwahl');
-    const fenster = { machtkarte: document.getElementById('machtkarte'), zeitleiste: document.getElementById('zeitleiste') };
-    const ansichtAusHash = () => (ANSICHTEN[location.hash.slice(1)] ? location.hash.slice(1) : 'machtkarte');
+<main>
+  <section class="abschnitt" aria-labelledby="worum">
+    <div class="mitte">
+      <div><span class="marke">Handlung</span><h2 id="worum">Worum geht es?</h2></div>
+      <div class="text">
+        <p>Am Morgen seines 30. Geburtstags wird Josef K., Prokurist einer Bank, in seiner Wohnung verhaftet. Wofür, erfährt er nicht. Die Wächter wissen es selbst nicht und kümmern sich auch nicht um seine Papiere.</p>
+        <p>K. darf zunächst weiterleben und arbeiten, wird aber in ein Verfahren gezogen, dessen Gericht keine erkennbare Spitze hat. Verhöre und Kanzleien liegen auf den Dachböden von Mietshäusern. Alle Versuche, auf den Ausgang Einfluss zu nehmen, laufen ins Leere. Am Vorabend seines 31. Geburtstags wird er hingerichtet.</p>
+        <div class="deutungsbox">
+          <span class="marke deutung">Deutung</span>
+          <p>Eine mögliche Lesart: Die Macht des Gerichts beruht nicht auf Beweisen oder Gesetzen, die man kennt, sondern darauf, dass K. sich selbst für schuldig hält und mitspielt. Das ist eine Interpretation, im Text steht sie so nicht.</p>
+        </div>
+      </div>
+    </div>
+    <ul class="zitate mitte" aria-label="Drei Sätze aus dem Roman">
+      <li><blockquote><p>„Was kümmern uns denn die?“</p><footer>Ein Wächter zu K.s Legitimationspapieren</footer></blockquote></li>
+      <li><blockquote><p>„Das Gericht will nichts von dir.“</p><footer>Der Geistliche im Dom</footer></blockquote></li>
+      <li><blockquote><p>„Wie ein Hund!“</p><footer>K.s letzte Worte</footer></blockquote></li>
+    </ul>
+  </section>
 
-    const karte = mountMachtkarte(fenster.machtkarte, daten);
-    // Figur in der Zeitleiste angeklickt → in der Machtkarte zeigen
-    mountZeitleiste(fenster.zeitleiste, chronologie, daten, {
-      beiFigur: (id) => { setzeAnsicht('machtkarte'); karte.waehle(id); },
-    });
+  <section class="abschnitt gegen" aria-labelledby="kafka">
+    <div class="mitte">
+      <div><span class="marke">Biografie</span><h2 id="kafka">Franz Kafka</h2></div>
+      <div class="text">
+        <dl class="fakten">
+          <dt>3. Juli 1883</dt><dd>in Prag geboren, Sohn des jüdischen Kaufmanns Hermann Kafka und seiner Frau Julie, geb. Löwy; er schreibt auf Deutsch</dd>
+          <dt>Beruf</dt><dd>promovierter Jurist (Studium in Prag), angestellt bei der Arbeiter-Unfall-Versicherungs-Anstalt in Prag; geschrieben hat er neben dem Brotberuf</dd>
+          <dt>1914/15</dt><dd>von August 1914 bis Januar 1915 entsteht „Der Process“; der Roman bleibt unvollendet</dd>
+          <dt>3. Juni 1924</dt><dd>stirbt im Sanatorium Kierling bei Wien an Tuberkulose</dd>
+          <dt>1925</dt><dd>Max Brod veröffentlicht den Roman nach Kafkas Tod, gegen dessen Wunsch, den Nachlass zu vernichten</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
 
-    wahl.append(Object.assign(document.createElement('span'), { textContent: 'Ansicht:' }));
-    const knoepfe = Object.entries(ANSICHTEN).map(([key, label]) => {
-      const b = document.createElement('button');
-      b.type = 'button'; b.textContent = label;
-      b.addEventListener('click', () => setzeAnsicht(key));
-      wahl.append(b);
-      return [key, b];
-    });
+  <section class="abschnitt" aria-labelledby="kafkaesk">
+    <div class="mitte">
+      <div><span class="marke deutung">Begriff und Deutung</span><h2 id="kafkaesk">„Kafkaesk“ und 100 Jahre „Der Process“</h2></div>
+      <div class="text">
+        <p>Als „kafkaesk“ bezeichnet man heute Lagen, in denen ein Mensch einer undurchschaubaren Instanz gegenübersteht: Regeln, die niemand erklärt, Zuständigkeiten, die ins Leere verweisen, Kontrolle ohne Gesicht. Der Begriff berührt die Spannung zwischen Kontrolle von außen und Selbstbestimmung. Er wird deshalb oft in Debatten über Bürokratie und Organisationen gebraucht.</p>
+        <p>Seit der Erstausgabe von 1925 sind mehr als 100 Jahre vergangen. Der Roman gilt bis heute als Klassiker über Macht und Ohnmacht, und „kafkaesk“ ist längst ein Wort der Alltagssprache.</p>
+      </div>
+    </div>
+  </section>
+</main>
 
-    function setzeAnsicht(name) {
-      Object.entries(fenster).forEach(([k, f]) => { f.hidden = k !== name; });
-      knoepfe.forEach(([key, b]) => b.setAttribute('aria-pressed', String(key === name)));
-      if (location.hash.slice(1) !== name) history.replaceState(null, '', `#${name}`);
-    }
+<footer class="fuss">
+  <div class="mitte">
+    <h2>Quellen der Fakten</h2>
+    <ul>
+      <li><a href="https://www.dhm.de/lemo/biografie/franz-kafka" target="_blank" rel="noopener">DHM, LeMO: Biografie Franz Kafka</a></li>
+      <li><a href="https://res.cloudinary.com/suhrkamp/images/v1742130208/135986/der-prozess_9783518456699_leseprobe.pdf" target="_blank" rel="noopener">Suhrkamp: Leseprobe „Der Prozess“ (PDF)</a></li>
+    </ul>
+    <h2 class="gruppe">Weiterführende Links</h2>
+    <ul>
+      <li><a href="https://www.franzkafka.de/leben" target="_blank" rel="noopener">franzkafka.de: Leben</a></li>
+      <li><a href="https://www.literatpro.de/magazin/kafkaesk-kontrolle-selbstbestimmung" target="_blank" rel="noopener">Literatpro: Kafkaesk, Kontrolle und Selbstbestimmung</a></li>
+      <li><a href="https://evangelische-zeitung.de/100-jahre-der-prozess-kafkas-klassiker-ueber-macht-und-ohnmacht/" target="_blank" rel="noopener">Evangelische Zeitung: 100 Jahre „Der Process“, Kafkas Klassiker über Macht und Ohnmacht</a></li>
+      <li><a href="https://www.bnw.de/service/blog/fuehrungskraefte/der-kafka-effekt-warum-weniger-buerokratie-nicht-automatisch-bessere-organisationen-schafft/" target="_blank" rel="noopener">BNW: Der Kafka-Effekt, warum weniger Bürokratie nicht automatisch bessere Organisationen schafft</a></li>
+    </ul>
+    <p class="projekt">Deutsch-GK-Projekt · Texte in eigenen Worten · Romanzitate am Roman geprüft</p>
+  </div>
+</footer>
 
-    addEventListener('hashchange', () => setzeAnsicht(ansichtAusHash()));
-    setzeAnsicht(ansichtAusHash());
-  </script>
+<script>
+/* ===== KONFIGURATION: Unterseiten =====
+   Hier (und nur hier) Links und Titel pflegen. Die Türen werden daraus erzeugt.
+   href: null  ->  Platzhalter „in Vorbereitung“ (sichtbar, nicht klickbar).
+   Seiten im Repo relativ verlinken (z. B. "machtkarte.html"); externe Seiten mit https://… öffnen in neuem Tab. */
+const UNTERSEITEN = [
+  { titel: "Machtkarte",
+    text: "Wer übt im Roman Macht über wen aus? Eine Pyramide von der unsichtbaren Spitze des Gerichts bis zu den Angeklagten; die Figuren lassen sich anklicken.",
+    href: "machtkarte.html#machtkarte" },
+  { titel: "Chronologie der Macht",
+    text: "K.s Versuche, seine Lage zu verbessern, und wie sein Handlungsspielraum von der Verhaftung bis zum Ende sinkt (10 Stationen).",
+    href: "machtkarte.html#zeitleiste" },
+  { titel: "Räume des Gerichts",
+    text: "Wo das Gericht tagt: Kanzleien auf Dachböden, enge Flure, Räume ohne Ordnung.",
+    href: null },
+  { titel: "Deutungsperspektiven",
+    text: "Der Roman unter zwei Blickwinkeln: psychoanalytische und politische, herrschaftskritische Lesart.",
+    href: null }
+];
+
+/* ===== Türen erzeugen ===== */
+document.getElementById("tueren").innerHTML = UNTERSEITEN.map((u, i) => {
+  const kopf = `<span class="nr">Tür ${i + 1}</span><h3>${u.titel}</h3><p>${u.text}</p>`;
+  const extern = /^https?:/.test(u.href || "");
+  const li = u.href
+    ? `<a class="tuer" href="${u.href}"${extern ? ' target="_blank" rel="noopener"' : ""} aria-label="${u.titel} öffnen${extern ? " (neuer Tab)" : ""}">${kopf}<span class="hinweis">Öffnen <span aria-hidden="true">${extern ? "↗" : "→"}</span></span></a>`
+    : `<a class="tuer" aria-disabled="true">${kopf}<span class="hinweis">In Vorbereitung · folgt</span></a>`;
+  return `<li>${li}</li>`;
+}).join("");
+
+/* ===== Schatten-Stärke beim Scrollen (siehe CSS „Bühne“) =====
+   Bei prefers-reduced-motion bleibt der Wert fest bei .3 aus dem CSS. */
+if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  const setze = () => document.documentElement.style.setProperty(
+    "--s", Math.min(1, scrollY / (innerHeight * 0.9)).toFixed(3));
+  addEventListener("scroll", setze, { passive: true });
+  setze();
+}
+</script>
 </body>
 </html>
