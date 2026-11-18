@@ -21,7 +21,6 @@
   --salbei: #cfd6cd;
   --weiss: #fff;
   --gelb: #f2b705;
-  --schraeg: clamp(24px, 4vw, 64px); /* Höhe der schrägen Abschnittskanten */
   --s: .3;                           /* Schatten-Stärke 0..1, setzt das Skript beim Scrollen */
   --schrift: "Montserrat", "Avenir Next", "Segoe UI", system-ui, sans-serif;
 }
@@ -32,7 +31,7 @@ body {
   font: 400 1.0625rem/1.65 var(--schrift);
   overflow-x: hidden;
 }
-h1, h2, h3, p, ul, figure, blockquote, dl, dd { margin: 0; padding: 0; }
+h1, h2, h3, p, ul { margin: 0; padding: 0; }
 ul { list-style: none; }
 a { color: var(--gelb); text-underline-offset: .2em; }
 a:focus-visible { outline: 3px solid var(--gelb); outline-offset: 4px; }
@@ -42,6 +41,7 @@ a:focus-visible { outline: 3px solid var(--gelb); outline-offset: 4px; }
 /* Raster aus geraden Linien = Aktenordnung der Bank: überschaubar, rational. */
 .buehne {
   position: relative; overflow: hidden; isolation: isolate;
+  min-height: 100vh; min-height: 100svh;
   background-image:
     linear-gradient(rgba(140,152,163,.14) 1px, transparent 1px),
     linear-gradient(90deg, rgba(140,152,163,.14) 1px, transparent 1px);
@@ -88,7 +88,7 @@ h1 {
 }
 
 /* ===== 4. Türen (Navigation) ===== */
-.tueren-bereich { padding-block: 1rem 3rem; }
+.tueren-bereich { padding-block: 1rem 4rem; }
 h2 { font-weight: 700; font-size: clamp(1.4rem, 3vw, 1.9rem); line-height: 1.25; color: var(--weiss); }
 .tueren-hinweis { max-width: 44em; margin-top: .4rem; color: var(--salbei); }
 .tueren { display: grid; gap: 1.25rem; margin-top: 1.5rem; grid-template-columns: 1fr; }
@@ -126,40 +126,7 @@ a.tuer:hover, a.tuer:focus-visible { transform: none; box-shadow: 0 10px 40px rg
 .tuer[aria-disabled="true"]::after { background: var(--blaugrau); }
 .tuer[aria-disabled="true"] .hinweis { color: var(--salbei); }
 
-/* ===== 5. Abschnitte: die Gerichtswelt kippt ===== */
-/* Die Flächen unter den Türen haben schräge Kanten statt Raster: Wir verlassen die Bank,
-   die Räume werden schief wie die Kanzleien auf den Dachböden. Die Texte bleiben gerade und lesbar. */
-.abschnitt { position: relative; isolation: isolate; padding-block: calc(var(--schraeg) + 2rem); }
-.abschnitt::before {
-  content: ""; position: absolute; inset: 0; z-index: -1; background: var(--flaeche);
-  clip-path: polygon(0 var(--schraeg), 100% 0, 100% calc(100% - var(--schraeg)), 0 100%);
-}
-.abschnitt.gegen::before { clip-path: polygon(0 0, 100% var(--schraeg), 100% 100%, 0 calc(100% - var(--schraeg))); background: var(--grund); }
-.abschnitt .mitte { display: grid; gap: 1.5rem 3rem; }
-@media (min-width: 900px) { .abschnitt .mitte { grid-template-columns: 1fr 1.6fr; align-items: start; } }
-.text > * + * { margin-top: 1rem; }
-.marke {
-  display: inline-block; margin-bottom: .6rem; padding: .15rem .6rem; font-size: .78rem; font-weight: 700;
-  letter-spacing: .14em; text-transform: uppercase; color: var(--grund); background: var(--salbei);
-}
-.marke.deutung { background: var(--gelb); }
-.deutungsbox { padding: 1rem 1.2rem; border-left: 5px solid var(--gelb); background: var(--grund); }
-.abschnitt .zitate { grid-template-columns: 1fr; gap: 1rem; margin-top: 1.5rem; }
-@media (min-width: 700px) { .abschnitt .zitate { grid-template-columns: repeat(3, 1fr); } }
-.zitate blockquote { padding: 1rem 1.1rem; border: 2px solid var(--blaugrau); background: var(--grund); }
-.zitate p { font-size: 1.25rem; font-weight: 700; line-height: 1.35; color: var(--weiss); }
-.zitate footer { margin-top: .6rem; font-size: .9rem; color: var(--blaugrau); }
-.fakten { display: grid; grid-template-columns: auto 1fr; gap: .5rem 1.2rem; }
-.fakten dt { font-weight: 700; color: var(--gelb); }
-
-/* ===== 6. Fußzeile: wieder gerade Linien ===== */
-.fuss { padding-block: 2.5rem 3rem; border-top: 2px solid var(--blaugrau); font-size: .95rem; }
-.fuss h2 { font-size: 1.1rem; margin-bottom: .6rem; }
-.fuss li + li { margin-top: .35rem; }
-.fuss .gruppe { margin-top: 1.5rem; }
-.fuss .projekt { margin-top: 1.5rem; color: var(--blaugrau); }
-
-/* ===== 7. Bewegung abschalten ===== */
+/* ===== 5. Bewegung abschalten ===== */
 @media (prefers-reduced-motion: reduce) {
   .tuer, .buehne::after { transition: none; }
   a.tuer:hover, a.tuer:focus-visible { transform: rotateY(var(--dreh)); }
@@ -206,70 +173,6 @@ a.tuer:hover, a.tuer:focus-visible { transform: none; box-shadow: 0 10px 40px rg
     <ul class="tueren" id="tueren"></ul>
   </nav>
 </div>
-
-<main>
-  <section class="abschnitt" aria-labelledby="worum">
-    <div class="mitte">
-      <div><span class="marke">Handlung</span><h2 id="worum">Worum geht es?</h2></div>
-      <div class="text">
-        <p>Am Morgen seines 30. Geburtstags wird Josef K., Prokurist einer Bank, in seiner Wohnung verhaftet. Wofür, erfährt er nicht. Die Wächter wissen es selbst nicht und kümmern sich auch nicht um seine Papiere.</p>
-        <p>K. darf zunächst weiterleben und arbeiten, wird aber in ein Verfahren gezogen, dessen Gericht keine erkennbare Spitze hat. Verhöre und Kanzleien liegen auf den Dachböden von Mietshäusern. Alle Versuche, auf den Ausgang Einfluss zu nehmen, laufen ins Leere. Am Vorabend seines 31. Geburtstags wird er hingerichtet.</p>
-        <div class="deutungsbox">
-          <span class="marke deutung">Deutung</span>
-          <p>Eine mögliche Lesart: Die Macht des Gerichts beruht nicht auf Beweisen oder Gesetzen, die man kennt, sondern darauf, dass K. sich selbst für schuldig hält und mitspielt. Das ist eine Interpretation, im Text steht sie so nicht.</p>
-        </div>
-      </div>
-    </div>
-    <ul class="zitate mitte" aria-label="Drei Sätze aus dem Roman">
-      <li><blockquote><p>„Was kümmern uns denn die?“</p><footer>Ein Wächter zu K.s Legitimationspapieren</footer></blockquote></li>
-      <li><blockquote><p>„Das Gericht will nichts von dir.“</p><footer>Der Geistliche im Dom</footer></blockquote></li>
-      <li><blockquote><p>„Wie ein Hund!“</p><footer>K.s letzte Worte</footer></blockquote></li>
-    </ul>
-  </section>
-
-  <section class="abschnitt gegen" aria-labelledby="kafka">
-    <div class="mitte">
-      <div><span class="marke">Biografie</span><h2 id="kafka">Franz Kafka</h2></div>
-      <div class="text">
-        <dl class="fakten">
-          <dt>3. Juli 1883</dt><dd>in Prag geboren, Sohn des jüdischen Kaufmanns Hermann Kafka und seiner Frau Julie, geb. Löwy; er schreibt auf Deutsch</dd>
-          <dt>Beruf</dt><dd>promovierter Jurist (Studium in Prag), angestellt bei der Arbeiter-Unfall-Versicherungs-Anstalt in Prag; geschrieben hat er neben dem Brotberuf</dd>
-          <dt>1914/15</dt><dd>von August 1914 bis Januar 1915 entsteht „Der Process“; der Roman bleibt unvollendet</dd>
-          <dt>3. Juni 1924</dt><dd>stirbt im Sanatorium Kierling bei Wien an Tuberkulose</dd>
-          <dt>1925</dt><dd>Max Brod veröffentlicht den Roman nach Kafkas Tod, gegen dessen Wunsch, den Nachlass zu vernichten</dd>
-        </dl>
-      </div>
-    </div>
-  </section>
-
-  <section class="abschnitt" aria-labelledby="kafkaesk">
-    <div class="mitte">
-      <div><span class="marke deutung">Begriff und Deutung</span><h2 id="kafkaesk">„Kafkaesk“ und 100 Jahre „Der Process“</h2></div>
-      <div class="text">
-        <p>Als „kafkaesk“ bezeichnet man heute Lagen, in denen ein Mensch einer undurchschaubaren Instanz gegenübersteht: Regeln, die niemand erklärt, Zuständigkeiten, die ins Leere verweisen, Kontrolle ohne Gesicht. Der Begriff berührt die Spannung zwischen Kontrolle von außen und Selbstbestimmung. Er wird deshalb oft in Debatten über Bürokratie und Organisationen gebraucht.</p>
-        <p>Seit der Erstausgabe von 1925 sind mehr als 100 Jahre vergangen. Der Roman gilt bis heute als Klassiker über Macht und Ohnmacht, und „kafkaesk“ ist längst ein Wort der Alltagssprache.</p>
-      </div>
-    </div>
-  </section>
-</main>
-
-<footer class="fuss">
-  <div class="mitte">
-    <h2>Quellen der Fakten</h2>
-    <ul>
-      <li><a href="https://www.dhm.de/lemo/biografie/franz-kafka" target="_blank" rel="noopener">DHM, LeMO: Biografie Franz Kafka</a></li>
-      <li><a href="https://res.cloudinary.com/suhrkamp/images/v1742130208/135986/der-prozess_9783518456699_leseprobe.pdf" target="_blank" rel="noopener">Suhrkamp: Leseprobe „Der Prozess“ (PDF)</a></li>
-    </ul>
-    <h2 class="gruppe">Weiterführende Links</h2>
-    <ul>
-      <li><a href="https://www.franzkafka.de/leben" target="_blank" rel="noopener">franzkafka.de: Leben</a></li>
-      <li><a href="https://www.literatpro.de/magazin/kafkaesk-kontrolle-selbstbestimmung" target="_blank" rel="noopener">Literatpro: Kafkaesk, Kontrolle und Selbstbestimmung</a></li>
-      <li><a href="https://evangelische-zeitung.de/100-jahre-der-prozess-kafkas-klassiker-ueber-macht-und-ohnmacht/" target="_blank" rel="noopener">Evangelische Zeitung: 100 Jahre „Der Process“, Kafkas Klassiker über Macht und Ohnmacht</a></li>
-      <li><a href="https://www.bnw.de/service/blog/fuehrungskraefte/der-kafka-effekt-warum-weniger-buerokratie-nicht-automatisch-bessere-organisationen-schafft/" target="_blank" rel="noopener">BNW: Der Kafka-Effekt, warum weniger Bürokratie nicht automatisch bessere Organisationen schafft</a></li>
-    </ul>
-    <p class="projekt">Deutsch-GK-Projekt · Texte in eigenen Worten · Romanzitate am Roman geprüft</p>
-  </div>
-</footer>
 
 <script>
 /* ===== KONFIGURATION: Unterseiten =====
