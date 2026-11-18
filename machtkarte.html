@@ -6,8 +6,10 @@
   <title>Machtkarte – Der Process</title>
   <link rel="icon" href="data:,">
   <script>
-    // Alter Link …/machtkarte.html#zeitleiste: Die Chronologie hat eine eigene Seite.
-    if (location.hash === "#zeitleiste") location.replace("chronologie.html");
+    // Alter Link …/machtkarte.html#zeitleiste: Die Chronologie hat eine eigene Seite (beim Laden und bei Hash-Wechsel).
+    function weiterleiten() { if (location.hash === "#zeitleiste") location.replace("chronologie.html"); }
+    weiterleiten();
+    addEventListener("hashchange", weiterleiten);
   </script>
   <link rel="stylesheet" href="seite.css">
   <link rel="stylesheet" href="machtkarte.css">

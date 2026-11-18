@@ -6,9 +6,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Schul-Website (Deutsch-Grundkurs) zu Franz Kafkas Roman „Der Process“: Machtkarte, Chronologie der Macht und mehr.">
 <script>
-  // Alte Links (…/Machtkarte/#machtkarte, #zeitleiste) führten früher direkt zur Ansicht: weiterleiten.
-  if (location.hash === "#machtkarte") location.replace("machtkarte.html");
-  if (location.hash === "#zeitleiste") location.replace("chronologie.html");
+  // Alte Links (…/Machtkarte/#machtkarte, #zeitleiste) führten früher direkt zur Ansicht: weiterleiten (beim Laden und bei Hash-Wechsel).
+  function weiterleiten() {
+    if (location.hash === "#machtkarte") location.replace("machtkarte.html");
+    if (location.hash === "#zeitleiste") location.replace("chronologie.html");
+  }
+  weiterleiten();
+  addEventListener("hashchange", weiterleiten);
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
