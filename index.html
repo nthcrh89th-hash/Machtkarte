@@ -16,168 +16,127 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ===== 1. Farben und Grundwerte (wie die Machtkarte) ===== */
+/* ===== 1. Farben und Grundwerte (wie Machtkarte und Chronologie) ===== */
 :root {
   --grund: #0b0d11;
   --flaeche: #1b2027;
   --blaugrau: #8c98a3;
   --salbei: #cfd6cd;
   --weiss: #fff;
-  --gelb: #f2b705;
-  --s: .3;                           /* Schatten-Stärke 0..1, setzt das Skript beim Scrollen */
-  --schrift: "Montserrat", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --gelb: #f2b705;                   /* nur als feine Linie und Fokusfarbe */
+  --kontur: rgba(140, 152, 163, .35);
+  --schrift: "Inter", "Segoe UI", system-ui, sans-serif;
 }
 * { box-sizing: border-box; }
 html { background: var(--grund); }
 body {
   margin: 0; color: var(--salbei); background: var(--grund);
-  font: 400 1.0625rem/1.65 var(--schrift);
-  overflow-x: hidden;
+  font: 400 1.0625rem/1.7 var(--schrift);
+  -webkit-font-smoothing: antialiased;
 }
 h1, h2, h3, p, ul { margin: 0; padding: 0; }
 ul { list-style: none; }
-a { color: var(--gelb); text-underline-offset: .2em; }
-a:focus-visible { outline: 3px solid var(--gelb); outline-offset: 4px; }
+a { color: inherit; }
+a:focus-visible { outline: 2px solid var(--gelb); outline-offset: 4px; }
 .mitte { width: min(1120px, 100% - 2.5rem); margin-inline: auto; }
 
-/* ===== 2. Bühne: K.s geordnete Welt (Raster) und der wachsende Schatten ===== */
-/* Raster aus geraden Linien = Aktenordnung der Bank: überschaubar, rational. */
-.buehne {
-  position: relative; overflow: hidden; isolation: isolate;
-  min-height: 100vh; min-height: 100svh;
-  background-image:
-    linear-gradient(rgba(140,152,163,.14) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(140,152,163,.14) 1px, transparent 1px);
-  background-size: 48px 48px;
-}
-/* Schatten wächst beim Scrollen über das Raster: das Gericht dringt in K.s
-   geordnete Welt ein. Die Kante ist schräg, weil das Gericht keine rechten Winkel kennt. */
-.buehne::after {
-  content: ""; position: absolute; inset: 0 0 0 auto; width: 65%; z-index: 0;
-  background: linear-gradient(100deg, rgba(0,0,0,0), rgba(0,0,0,.85));
-  clip-path: polygon(60% 0, 100% 0, 100% 100%, 15% 100%);
-  transform: scaleX(calc(.35 + var(--s) * .65)); transform-origin: right;
-  pointer-events: none;
-}
-.hero, .tueren-bereich { position: relative; z-index: 1; }
-
-/* ===== 3. Hero ===== */
+/* ===== 2. Kopfbereich ===== */
 .hero {
-  display: grid; gap: 1.5rem; align-items: center;
-  padding-block: clamp(2rem, 5vw, 3.5rem) 1.5rem;
+  display: grid; gap: 2.5rem; align-items: center;
+  padding-block: clamp(3rem, 9vw, 7rem) clamp(3rem, 7vw, 5.5rem);
 }
+/* Feine gelbe Linie als einziger Akzent über dem Kicker */
 .kicker {
-  font-weight: 700; font-size: .85rem; letter-spacing: .18em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 1rem;
+  font-weight: 500; font-size: .8125rem; letter-spacing: .16em; text-transform: uppercase;
   color: var(--blaugrau);
 }
-/* Titel leicht geneigt mit gestaffeltem Schatten: erste Verzerrung der Ordnung,
-   schon in der Überschrift beginnt die schräge Perspektive der Gerichtswelt. */
+.kicker::before { content: ""; flex: none; width: 2.5rem; height: 1px; background: var(--gelb); }
 h1 {
-  font: 400 clamp(3.4rem, 11vw, 8.5rem)/.95 "Anton", Impact, "Arial Narrow", sans-serif;
-  text-transform: uppercase; letter-spacing: .02em; color: var(--weiss);
-  transform: skewX(-5deg); transform-origin: left bottom;
-  text-shadow: .05em .06em 0 #3a444d, .1em .12em 0 #232a33;
-  margin-block: .4rem .6rem;
+  font-weight: 300; font-size: clamp(2.75rem, 7.5vw, 5.5rem); line-height: 1.05;
+  letter-spacing: -.025em; color: var(--weiss);
+  margin-block: 1.5rem 1rem;
 }
-.thema { font-weight: 700; font-size: clamp(1.1rem, 2.4vw, 1.5rem); color: var(--gelb); }
-.einstieg { max-width: 38em; margin-top: 1rem; }
-/* Flur: links gerade Aktenordner (Rational), rechts kippende Fluchtlinien,
-   ein Türspalt voll Licht und die riesige Silhouette (Irrational). Nur ab Tablet-Breite sichtbar. */
-.flur { display: none; width: 100%; max-height: 420px; }
-.flur .silhouette { transform-box: fill-box; transform-origin: 50% 100%; transform: scale(calc(1 + var(--s) * .35)); }
+.thema { font-weight: 500; font-size: clamp(1.05rem, 2vw, 1.35rem); letter-spacing: .01em; color: var(--salbei); }
+.einstieg { max-width: 36em; margin-top: 2rem; color: #a9b3bc; }
+
+@media (max-width: 480px) { .kicker { letter-spacing: .1em; gap: .75rem; } }
+
+/* ===== 3. Emblem: gestufte Pyramide (Verweis auf die Machtkarte) ===== */
+.emblem { display: none; width: 100%; max-width: 280px; height: auto; justify-self: end; }
 @media (min-width: 900px) {
-  .hero { grid-template-columns: 1.25fr .85fr; }
-  .flur { display: block; }
+  .hero { grid-template-columns: 1fr auto; gap: 4rem; }
+  .emblem { display: block; }
 }
 
-/* ===== 4. Türen (Navigation) ===== */
-.tueren-bereich { padding-block: 1rem 4rem; }
-h2 { font-weight: 700; font-size: clamp(1.4rem, 3vw, 1.9rem); line-height: 1.25; color: var(--weiss); }
-.tueren-hinweis { max-width: 44em; margin-top: .4rem; color: var(--salbei); }
-.tueren { display: grid; gap: 1.25rem; margin-top: 1.5rem; grid-template-columns: 1fr; }
-@media (min-width: 600px)  { .tueren { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1100px) {
-  .tueren { grid-template-columns: repeat(4, 1fr); }
-  .tueren li:nth-child(even) { margin-top: 1.5rem; } /* Türen sitzen nicht auf einer Linie: Flur ohne klare Ordnung */
+/* ===== 4. Unterseiten (Navigation) ===== */
+.nav-bereich { padding-block: clamp(2.5rem, 6vw, 4rem) clamp(4rem, 8vw, 7rem); border-top: 1px solid var(--kontur); }
+h2 { font-weight: 500; font-size: clamp(1.35rem, 2.6vw, 1.75rem); line-height: 1.3; letter-spacing: -.01em; color: var(--weiss); }
+.nav-hinweis { max-width: 44em; margin-top: .75rem; color: #a9b3bc; }
+.karten { display: grid; gap: 1.25rem; margin-top: 2.5rem; grid-template-columns: 1fr; }
+@media (min-width: 600px)  { .karten { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1100px) { .karten { grid-template-columns: repeat(4, 1fr); } }
+
+/* Gerade Karte, dünne Kontur; bei Hover/Fokus hellt die Kontur auf und eine feine gelbe Linie erscheint oben */
+.karte {
+  position: relative; display: flex; flex-direction: column; gap: .75rem; height: 100%;
+  min-height: 16rem; padding: 1.5rem 1.5rem 1.4rem;
+  color: var(--salbei); text-decoration: none; background: var(--flaeche);
+  border: 1px solid var(--kontur);
+  transition: border-color .25s ease, transform .25s ease;
 }
-.tueren li { perspective: 900px; }
-.tueren li:nth-child(1) { --dreh: 5deg;  --ursprung: left center; }
-.tueren li:nth-child(2) { --dreh: -4deg; --ursprung: right center; }
-.tueren li:nth-child(3) { --dreh: 6deg;  --ursprung: left center; }
-.tueren li:nth-child(4) { --dreh: -5deg; --ursprung: right center; }
-/* Jede Kachel ist eine Tür (Türhüter-Legende „Vor dem Gesetz“): leicht perspektivisch
-   verkantet; bei Hover/Fokus richtet sie sich auf und der Lichtspalt unter der Tür leuchtet. */
-.tuer {
-  position: relative; display: flex; flex-direction: column; gap: .5rem; height: 100%;
-  min-height: 15rem; padding: 1.25rem 1.7rem 1.4rem 1.1rem; /* rechts nur knapp Platz für die Klinke */
-  color: var(--salbei); text-decoration: none; background: linear-gradient(90deg, var(--flaeche), #232a33);
-  border: 2px solid var(--weiss); border-bottom: 6px solid var(--gelb);
-  transform: rotateY(var(--dreh)); transform-origin: var(--ursprung);
-  transition: transform .45s ease, box-shadow .45s ease;
+.karte::before {
+  content: ""; position: absolute; left: -1px; right: -1px; top: -1px; height: 2px;
+  background: var(--gelb); transform: scaleX(0); transform-origin: left; transition: transform .3s ease;
 }
-.tuer::after { /* Türklinke */
-  content: ""; position: absolute; right: .55rem; top: 50%; width: 10px; height: 10px;
-  border-radius: 50%; background: var(--gelb);
-}
-a.tuer:hover, a.tuer:focus-visible { transform: none; box-shadow: 0 10px 40px rgba(242,183,5,.35); }
-.tuer .nr { font-size: .8rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--blaugrau); }
-.tuer h3 { font-size: 1.3rem; line-height: 1.25; color: var(--weiss); }
-.tuer p { font-size: .98rem; line-height: 1.55; }
-.tuer .hinweis { margin-top: auto; padding-top: .6rem; font-weight: 700; font-size: .9rem; color: var(--gelb); }
-/* Platzhalter: verschlossene Tür, ohne Lichtspalt, gestrichelt, nicht klickbar */
-.tuer[aria-disabled="true"] { border-style: dashed; border-bottom-color: var(--blaugrau); background: var(--grund); cursor: default; }
-.tuer[aria-disabled="true"]::after { background: var(--blaugrau); }
-.tuer[aria-disabled="true"] .hinweis { color: var(--salbei); }
+a.karte[href]:hover, a.karte[href]:focus-visible { border-color: var(--blaugrau); transform: translateY(-3px); }
+a.karte[href]:hover::before, a.karte[href]:focus-visible::before { transform: scaleX(1); }
+.karte .nr { font-size: .75rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--blaugrau); }
+.karte h3 { font-weight: 500; font-size: 1.25rem; line-height: 1.3; letter-spacing: -.005em; color: var(--weiss); }
+.karte p { font-size: .96rem; line-height: 1.6; color: #b9c2bb; }
+.karte .hinweis { margin-top: auto; padding-top: .9rem; border-top: 1px solid var(--kontur); font-weight: 500; font-size: .875rem; color: var(--weiss); }
+.karte .pfeil { display: inline-block; transition: transform .25s ease; }
+a.karte[href]:hover .pfeil, a.karte[href]:focus-visible .pfeil { transform: translateX(4px); }
+/* Platzhalter: ruhiger, ohne Fläche, nicht klickbar */
+.karte[aria-disabled="true"] { background: transparent; cursor: default; }
+.karte[aria-disabled="true"] h3 { color: var(--salbei); }
+.karte[aria-disabled="true"] .hinweis { color: var(--blaugrau); }
 
 /* ===== 5. Bewegung abschalten ===== */
 @media (prefers-reduced-motion: reduce) {
-  .tuer, .buehne::after { transition: none; }
-  a.tuer:hover, a.tuer:focus-visible { transform: rotateY(var(--dreh)); }
+  .karte, .karte::before, .karte .pfeil { transition: none; }
+  a.karte[href]:hover, a.karte[href]:focus-visible { transform: none; }
+  a.karte[href]:hover .pfeil, a.karte[href]:focus-visible .pfeil { transform: none; }
 }
 </style>
 </head>
 <body>
 
-<div class="buehne">
-  <header class="hero mitte">
-    <div>
-      <p class="kicker">Deutsch-Grundkurs · Franz Kafka</p>
-      <h1>Der Process</h1>
-      <p class="thema">Macht, Ohnmacht, Scheitern</p>
-      <p class="einstieg">Ein Bankprokurist wird eines Morgens verhaftet und erfährt nie, wessen man ihn beschuldigt. Diese Seiten fragen, wer in diesem Roman Macht ausübt, wie K.s Spielraum schrumpft und wie man das deuten kann.</p>
-    </div>
-    <!-- dekorativ: Inhalt steht im Text, daher aria-hidden -->
-    <svg class="flur" viewBox="0 0 420 460" aria-hidden="true" focusable="false">
-      <defs>
-        <pattern id="akten" width="40" height="36" patternUnits="userSpaceOnUse">
-          <rect x="4" y="4" width="32" height="28" fill="none" stroke="#8c98a3" stroke-width="1.5"/>
-          <line x1="4" y1="12" x2="36" y2="12" stroke="#8c98a3" stroke-width="1"/>
-        </pattern>
-        <radialGradient id="licht"><stop offset="0" stop-color="#f2b705" stop-opacity=".55"/><stop offset="1" stop-color="#f2b705" stop-opacity="0"/></radialGradient>
-      </defs>
-      <rect x="0" y="20" width="160" height="360" fill="url(#akten)"/>
-      <circle cx="316" cy="216" r="190" fill="url(#licht)"/>
-      <path d="M170 0 L298 176 M170 460 L298 256 M420 0 L334 186 M420 460 L334 246" stroke="#8c98a3" stroke-width="2" fill="none"/>
-      <polygon points="298,176 334,186 334,246 298,256" fill="#1b2027" stroke="#fff" stroke-width="2"/>
-      <rect x="312" y="196" width="6" height="52" fill="#f2b705"/>
-      <g class="silhouette"><circle cx="392" cy="150" r="34" fill="#000"/><path d="M340 460 C340 300 352 215 392 200 C432 215 450 300 450 460 Z" fill="#000"/></g>
-      <g stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round">
-        <circle cx="215" cy="330" r="7"/><path d="M215 337 V372 M215 346 L203 362 M215 346 L227 362 M215 372 L207 392 M215 372 L223 392"/>
-      </g>
-      <g font-family="Montserrat, sans-serif" font-size="12" font-weight="700" letter-spacing="2" fill="#cfd6cd">
-        <text x="8" y="408">ORDNUNG</text><text x="250" y="440">SCHATTEN</text>
-      </g>
-    </svg>
-  </header>
+<header class="hero mitte">
+  <div>
+    <p class="kicker">Deutsch-Grundkurs · Franz Kafka</p>
+    <h1>Der Process</h1>
+    <p class="thema">Macht, Ohnmacht, Scheitern</p>
+    <p class="einstieg">Ein Bankprokurist wird eines Morgens verhaftet und erfährt nie, wessen man ihn beschuldigt. Diese Seiten fragen, wer in diesem Roman Macht ausübt, wie K.s Spielraum schrumpft und wie man das deuten kann.</p>
+  </div>
+  <!-- dekorativ: gestufte Pyramide wie auf der Machtkarte (Schwarz, Blaugrau, Salbei); Inhalt steht im Text, daher aria-hidden -->
+  <svg class="emblem" viewBox="0 0 240 200" aria-hidden="true" focusable="false">
+    <g stroke="#fff" stroke-width="1.25" stroke-linejoin="miter">
+      <rect x="90" y="10" width="60" height="50" fill="#000"/>
+      <rect x="50" y="60" width="140" height="50" fill="#8c98a3"/>
+      <rect x="10" y="110" width="220" height="50" fill="#cfd6cd"/>
+    </g>
+    <line x1="10" y1="178" x2="230" y2="178" stroke="#f2b705" stroke-width="1"/>
+  </svg>
+</header>
 
-  <nav class="tueren-bereich mitte" aria-labelledby="tueren-titel">
-    <h2 id="tueren-titel">Die Türen: Unterseiten</h2>
-    <p class="tueren-hinweis">In Kafkas Legende „Vor dem Gesetz“ steht eine Tür offen und wird dennoch bewacht. Hier stehen die Türen offen; zwei sind noch verschlossen.</p>
-    <ul class="tueren" id="tueren"></ul>
-  </nav>
-</div>
+<nav class="nav-bereich mitte" aria-labelledby="nav-titel">
+  <h2 id="nav-titel">Die Türen: Unterseiten</h2>
+  <p class="nav-hinweis">In Kafkas Legende „Vor dem Gesetz“ steht eine Tür offen und wird dennoch bewacht. Hier stehen die Türen offen; zwei sind noch verschlossen.</p>
+  <ul class="karten" id="tueren"></ul>
+</nav>
 
 <script>
 /* ===== KONFIGURATION: Unterseiten =====
@@ -199,24 +158,16 @@ const UNTERSEITEN = [
     href: null }
 ];
 
-/* ===== Türen erzeugen ===== */
+/* ===== Karten erzeugen ===== */
 document.getElementById("tueren").innerHTML = UNTERSEITEN.map((u, i) => {
   const kopf = `<span class="nr">Tür ${i + 1}</span><h3>${u.titel}</h3><p>${u.text}</p>`;
   const extern = /^https?:/.test(u.href || "");
   const li = u.href
-    ? `<a class="tuer" href="${u.href}"${extern ? ' target="_blank" rel="noopener"' : ""} aria-label="${u.titel} öffnen${extern ? " (neuer Tab)" : ""}">${kopf}<span class="hinweis">Öffnen <span aria-hidden="true">${extern ? "↗" : "→"}</span></span></a>`
-    : `<a class="tuer" aria-disabled="true">${kopf}<span class="hinweis">In Vorbereitung · folgt</span></a>`;
+    ? `<a class="karte" href="${u.href}"${extern ? ' target="_blank" rel="noopener"' : ""} aria-label="${u.titel} öffnen${extern ? " (neuer Tab)" : ""}">${kopf}<span class="hinweis">Öffnen <span class="pfeil" aria-hidden="true">${extern ? "↗" : "→"}</span></span></a>`
+    : `<a class="karte" aria-disabled="true">${kopf}<span class="hinweis">In Vorbereitung · folgt</span></a>`;
   return `<li>${li}</li>`;
 }).join("");
 
-/* ===== Schatten-Stärke beim Scrollen (siehe CSS „Bühne“) =====
-   Bei prefers-reduced-motion bleibt der Wert fest bei .3 aus dem CSS. */
-if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
-  const setze = () => document.documentElement.style.setProperty(
-    "--s", Math.min(1, scrollY / (innerHeight * 0.9)).toFixed(3));
-  addEventListener("scroll", setze, { passive: true });
-  setze();
-}
 </script>
 </body>
 </html>
